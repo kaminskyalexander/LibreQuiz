@@ -1,4 +1,15 @@
 .header {
+  margin: 36px 48px 64px;
   display: flex;
   justify-content: space-between;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.buttons {
+  display: flex;
+  gap: 24px;
 }
