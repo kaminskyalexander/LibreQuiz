@@ -19,7 +19,7 @@ export default function CourseCard({ name, time, description, thumbnail, href })
 
   const router = useRouter();
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card>
       <CardActionArea component="div" onClick={event => { router.push(href) }}>
         <CardMedia
           component="img"
