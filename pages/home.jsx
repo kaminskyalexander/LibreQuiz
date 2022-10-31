@@ -8,7 +8,7 @@ export default function Home() {
       courseName="CS 135"
       courseTime="10:00 AM"
       courseDescription="Section 012"
-      bannerImage="/img/banners/cs.jpg"
+      thumbnail="/img/banners/cs.jpg"
     />
   </>;
 }
