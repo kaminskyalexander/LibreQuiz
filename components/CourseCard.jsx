@@ -3,8 +3,6 @@ import {
   Card, CardContent, CardActionArea, CardMedia, CardHeader, Typography, IconButton, Menu,
   MenuItem
 } from '@mui/material';
-
-import { } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
 
