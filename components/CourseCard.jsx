@@ -42,9 +42,9 @@ export default function CourseCard({ name, time, description, thumbnail, href })
               <MoreVertIcon />
             </IconButton>
           }
-          style={{ "paddingBottom": 0 }}
+          sx={{pb: 0}}
         />
-        <CardContent style={{ "paddingTop": 0 }}>
+        <CardContent sx={{pt: 0}}>
           <Typography variant="body2" color="text.secondary">
             {time}
           </Typography>

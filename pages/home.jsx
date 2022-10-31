@@ -56,7 +56,7 @@ export default function Home() {
 
   return <>
     <Container>
-      <Grid container style={{ "paddingTop": "1rem" }}>
+      <Grid container sx={{pt: 4}}>
         <Grid item xs>
           <Typography variant="h3" component="h1">My Courses</Typography>
         </Grid>
@@ -68,7 +68,7 @@ export default function Home() {
           </Fab>
         </Grid>}
       </Grid>
-      <Grid container spacing={2} style={{ "paddingTop": "1rem", "paddingBottom": "2rem" }}>
+      <Grid container spacing={2} sx={{pt: 4, pb: 4}}>
         {courses.map(course => (
           <Grid item xs={12} sm={4} md={3}>
             <CourseCard
