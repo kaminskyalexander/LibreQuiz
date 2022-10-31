@@ -1,15 +1,28 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActionArea from '@mui/material/CardActionArea'
-import CardMedia from '@mui/material/CardMedia';
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography';
-import { IconButton } from '@mui/material';
+import {
+  Card, CardContent, CardActionArea, CardMedia, CardHeader, Typography, IconButton, Menu,
+  MenuItem
+} from '@mui/material';
+
+import { } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
 
 export default function CourseCard({ name, time, description, thumbnail, href }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleChange = (event) => {
+    setAuth(event.target.checked);
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const router = useRouter();
   return (
     <Card sx={{ maxWidth: 345 }}>
@@ -29,7 +42,7 @@ export default function CourseCard({ name, time, description, thumbnail, href })
               onClick={event => {
                 event.stopPropagation();
                 event.preventDefault();
-                console.log("Button clicked");
+                handleMenu(event);
               }}
             >
               <MoreVertIcon />
@@ -46,6 +59,23 @@ export default function CourseCard({ name, time, description, thumbnail, href })
           </Typography>
         </CardContent>
       </CardActionArea>
+      <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>Pin</MenuItem>
+          <MenuItem onClick={handleClose}>Remove</MenuItem>
+        </Menu>
     </Card>
   );
 }
