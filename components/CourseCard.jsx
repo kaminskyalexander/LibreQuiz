@@ -9,10 +9,6 @@ import { useRouter } from 'next/router';
 export default function CourseCard({ name, time, description, thumbnail, href }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
