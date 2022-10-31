@@ -7,26 +7,29 @@ import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useRouter } from 'next/router';
 
-export default function CourseCard(props) {
+export default function CourseCard({ name, time, description, thumbnail, href }) {
+  const router = useRouter();
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
+      <CardActionArea component="div" onClick={event => { router.push(href) }}>
         <CardMedia
           component="img"
           height="140"
           alt="Course Thumbnail"
-          image={props.thumbnail}
+          image={thumbnail}
         />
         <CardHeader
-          title={props.courseName}
+          title={name}
           action={
             <IconButton
               aria-label="settings"
-              onMouseDown={event => {event.stopPropagation();}}
+              onMouseDown={event => event.stopPropagation()}
               onClick={event => {
                 event.stopPropagation();
-                // Implement 3 dots button functionality here...
+                event.preventDefault();
+                console.log("Button clicked");
               }}
             >
               <MoreVertIcon />
@@ -36,10 +39,10 @@ export default function CourseCard(props) {
         />
         <CardContent style={{ "paddingTop": 0 }}>
           <Typography variant="body2" color="text.secondary">
-            {props.courseTime}
+            {time}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {props.courseDescription}
+            {description}
           </Typography>
         </CardContent>
       </CardActionArea>
