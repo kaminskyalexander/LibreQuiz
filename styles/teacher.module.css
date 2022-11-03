@@ -12,7 +12,6 @@
 
 .button
 {
-    width: 15vw;
     min-width: 15rem;
     height: 4rem
 }
@@ -23,7 +22,7 @@
     margin: auto;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 900px) {
     .button__container {
       flex-direction: column;
       justify-content: center;
