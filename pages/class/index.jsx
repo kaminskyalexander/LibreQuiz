@@ -1,5 +1,4 @@
 import AttendanceCalendar from "../../components/AttendanceCalendar"
-import dayjs from "dayjs";
 
 const attendanceData = {
   "2022-10-04": {attended: true},

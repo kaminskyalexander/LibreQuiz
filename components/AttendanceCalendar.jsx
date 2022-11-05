@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { styled } from "@mui/material/styles";
-import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
@@ -26,10 +25,6 @@ const CustomPickersDay = styled(PickersDay, {
 export default function AttendanceCalendar({ attendanceData }) {
 
   const [data, setData] = React.useState(attendanceData);
-
-  const isInAttendance = (date) => {
-    ;
-  }
 
   const renderPickerDay = (date, selectedDates, pickersDayProps) => {
     const dateKey = date.format("YYYY-MM-DD"); // Index object using string key
