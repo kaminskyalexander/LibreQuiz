@@ -8,13 +8,13 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { PickersDay } from "@mui/x-date-pickers";
 
 const CustomPickersDay = styled(PickersDay, {
-  shouldForwardProp: (prop) => prop !== "selected"
-})(({ theme, selected }) => ({
-  ...(selected && {
-    backgroundColor: theme.palette.primary.main,
+  shouldForwardProp: (prop) => (prop !== "hasEntry" || prop !== "attended")
+})(({ theme, hasEntry, attended }) => ({
+  ...(hasEntry && {
+    backgroundColor: attended && theme.palette.success.light || theme.palette.error.light,
     color: theme.palette.common.white,
     "&:hover, &:focus": {
-      backgroundColor: theme.palette.primary.dark
+      backgroundColor: attended && theme.palette.success.main || theme.palette.error.main
     },
     borderTopLeftRadius: "50%",
     borderBottomLeftRadius: "50%",
@@ -28,23 +28,18 @@ export default function AttendanceCalendar({ attendanceData }) {
   const [data, setData] = React.useState(attendanceData);
 
   const isInAttendance = (date) => {
-    for (const [key, value] of Object.entries(data))
-    {
-      console.log(key);
-      if (date.isSame(dayjs(key)))
-      {
-        return true;
-      }
-    }
-    return false;
+    ;
   }
 
   const renderPickerDay = (date, selectedDates, pickersDayProps) => {
-    const selected = isInAttendance(date);
+    const dateKey = date.format("YYYY-MM-DD"); // Index object using string key
+    const hasEntry = dateKey in data;
+    const attended = hasEntry && data[dateKey].attended;
     return (
       <CustomPickersDay
         {...pickersDayProps}
-        selected={selected}
+        hasEntry={hasEntry}
+        attended={attended}
       />
     );
   };
