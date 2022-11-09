@@ -1,14 +1,14 @@
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
 
-import { Button } from "@mui/material";
+import { Button } from '@mui/material';
 
-import starIcon from "../public/img/star.svg";
-import mockup from "../public/img/mockup.png";
+import starIcon from '../public/img/star.svg';
+import mockup from '../public/img/mockup.png';
 
 export default function Home() {
   return (
-    <div className="page">
+    <>
       <header className={styles.header}>
         <div className={styles.logo}>
           <Image src={starIcon} alt="Star icon" />
@@ -18,20 +18,18 @@ export default function Home() {
           <Button variant="outlined">Sign Up</Button>
         </div>
       </header>
-      <main>
+      <main className={`${styles.main} container`}>
         <div>
-          <h1>Lorem ipsum dolor sit amet</h1>
-          <p>
+          <h1 className={styles.title}>Lorem ipsum dolor sit amet</h1>
+          <p className={styles.paragraph}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
             vehicula ipsum tempor pulvinar suscipit. In hac habitasse platea
             dictumst. Quisque convallis commodo felis eget hendrerit.
           </p>
           <Button variant="contained">Get Started</Button>
         </div>
-        <div className="mockup">
-          <Image src={mockup} alt="Mockup" />
-        </div>
+        <Image src={mockup} className={styles.mockup} />
       </main>
-    </div>
+    </>
   );
 }
