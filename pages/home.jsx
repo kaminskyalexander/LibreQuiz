@@ -82,8 +82,8 @@ export default function Home() {
           )}
         </Grid>
         <Grid container spacing={2} sx={{ pt: 4, pb: 4 }}>
-          {courses.map((course) => (
-            <Grid item xs={12} sm={4} md={3}>
+          {courses.map((course, i) => (
+            <Grid item xs={12} sm={4} md={3} key={`course-${}`}>
               <CourseCard
                 name={course.name}
                 time={course.time}
