@@ -2,9 +2,9 @@ import * as React from 'react';
 import CourseCard from '../components/CourseCard';
 import JoinClassDialog from '../components/JoinClassDialog';
 import AddIcon from '@mui/icons-material/Add';
-import Grid from '@mui/material';
-import Typography from '@mui/material';
-import Fab from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Fab from '@mui/material/Fab';
 import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -83,7 +83,7 @@ export default function Home() {
         </Grid>
         <Grid container spacing={2} sx={{ pt: 4, pb: 4 }}>
           {courses.map((course, i) => (
-            <Grid item xs={12} sm={4} md={3} key={`course-${}`}>
+            <Grid item xs={12} sm={4} md={3}>
               <CourseCard
                 name={course.name}
                 time={course.time}
