@@ -8,6 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 export default function question() {
+  let theme = useTheme();
   return (
     <>
       <Typography variant="h2" align="center" sx={{ m: 6 }}>
