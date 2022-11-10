@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,42 +6,51 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import styles from "../styles/teacher.module.css";
+import styles from '../styles/teacher.module.css';
 import ConfirmationDialog from './ConfirmationDialog';
-import { Button } from "@mui/material";
+import Button from '@mui/material/Button';
 
-export default function QuestionTable({questions, handleRemoveQuestion}) {
-    let [confirmOpen, setConfirmOpen] = useState(false);
-    let [toDelete, setToDelete] = useState();
+export default function QuestionTable({ questions, handleRemoveQuestion }) {
+  let [confirmOpen, setConfirmOpen] = useState(false);
+  let [toDelete, setToDelete] = useState();
 
-    return (
-        <>
-        <div className={styles.question__table}>
+  return (
+    <>
+      <div className={styles.question__table}>
         <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+          <Table sx={{ minWidth: 400 }} aria-label="simple table">
             <TableHead>
-            <TableRow>
+              <TableRow>
                 <TableCell>Questions</TableCell>
                 <TableCell></TableCell>
-            </TableRow>
+              </TableRow>
             </TableHead>
             <TableBody>
-            {questions.map((question) => (
+              {questions.map((question) => (
                 <TableRow key={question.id}>
-                <TableCell>{question.question}</TableCell>
-                <TableCell align="right">
-                    <Button variant="contained" onClick={() => {
+                  <TableCell>{question.question}</TableCell>
+                  <TableCell align="right">
+                    <Button
+                      variant="contained"
+                      onClick={() => {
                         setToDelete(question.id);
                         setConfirmOpen(true);
-                    }}>Remove Question</Button>
-                </TableCell>
+                      }}
+                    >
+                      Remove Question
+                    </Button>
+                  </TableCell>
                 </TableRow>
-            ))}
+              ))}
             </TableBody>
-        </Table>
+          </Table>
         </TableContainer>
-        </div>
-        <ConfirmationDialog open={confirmOpen} setOpen={setConfirmOpen} onYes={() => handleRemoveQuestion(toDelete)}></ConfirmationDialog>
-        </>
-    );
+      </div>
+      <ConfirmationDialog
+        open={confirmOpen}
+        setOpen={setConfirmOpen}
+        onYes={() => handleRemoveQuestion(toDelete)}
+      ></ConfirmationDialog>
+    </>
+  );
 }

@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import styles from '../../styles/session.module.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 

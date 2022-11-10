@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 
 import starIcon from '../public/img/star.svg';
 import mockup from '../public/img/mockup.png';
