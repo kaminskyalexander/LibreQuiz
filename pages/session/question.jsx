@@ -6,6 +6,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import { positions } from '@mui/system';
 
 export default function question() {
   let theme = useTheme();
@@ -22,8 +23,8 @@ export default function question() {
       >
         <Grid
           container
-          spacing={3}
-          style={{ maxWidth: '80vw', minHeight: '60vh' }}
+          spacing={"15vh"}
+          style={{ maxWidth: '90vw'}}
         >
           <Grid item xs={6}>
             <Typography
@@ -46,7 +47,7 @@ export default function question() {
               C{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-              5
+            4
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -58,7 +59,7 @@ export default function question() {
               B{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-              4
+            3
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -70,16 +71,17 @@ export default function question() {
               D{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-              Not Enough Information
+            Not enough information
             </Typography>
           </Grid>
         </Grid>
       </Grid>
-      <Grid justifyContent="center" align-items="center" container>
+
+      <Grid justifyContent="center" align-items="center" position="absolute" top="85%" container>
         <BottomNavigation
           showLabels
           sx={{ width: '50vw' }}
-          style={{ backgroundColor: theme.palette.primary.main }}
+          style={{ backgroundColor: theme.palette.primary.main}}
         >
           <BottomNavigationAction
             label="Previous"
