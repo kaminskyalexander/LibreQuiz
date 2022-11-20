@@ -12,7 +12,10 @@ import { useRouter } from 'next/router';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import LooksOneIcon from '@mui/icons-material/LooksOne';
+import Alert from '@mui/material/Alert';
+import InfoIcon from '@mui/icons-material/Info';
+import Stack from '@mui/material/Stack';
+import Checkbox from '@mui/material/Checkbox';
 
 const attendanceData = {
   "2022-10-04": { attended: true },
@@ -27,73 +30,148 @@ const attendanceData = {
   "2022-11-03": { attended: false }
 }
 
+const QuizContent = () => {
+  const [quizOngoing, setQuizOngoing] = React.useState(true);
+
+  if (quizOngoing) {
+    return <>
+      <Checkbox onClick={() => {setQuizOngoing(!quizOngoing)}}/>
+      <QuizActiveContent/>
+    </>;
+  }
+  else {
+    return <>
+      <Checkbox onClick={() => {setQuizOngoing(!quizOngoing)}}/>
+      <QuizNonActiveContent/>
+    </>;
+  }
+}
+
+const QuizNonActiveContent = () => { 
+  return <>
+    <Container>
+      <Stack
+        sx={{height: '80vh'}}
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Alert 
+          severity="info" 
+          icon={<InfoIcon sx={{fontSize: 80}}/>}
+          style={{fontSize: 40, display: 'flex', alignItems: 'center', width: '70%'}}
+        >
+          Questions will appear here when the instructor starts polling.
+        </Alert>
+      </Stack>
+    </Container>
+  </>
+}
+
+const QuizActiveContent = () => {
+  const [currentAns, setCurrentAns] = React.useState(null);
+
+  return <Container>
+    <Grid container spacing={4} align="center">
+      <Grid item xs={12}>
+        <Typography variant="h3" component="h1" sx={{ pt: '10vh', pb: '10vh' }}>
+          Question 1
+        </Typography>
+      </Grid>
+
+      <Grid item xs={6}>
+        <Button
+          variant={(currentAns === 0) ? "contained" : "outlined"}
+          color="secondary"
+          style={{ width: '100%', height: '20vh', fontSize: 50 }}
+          onClick={() => { setCurrentAns(0) }}
+        >
+          A
+        </Button>
+      </Grid>
+      <Grid item xs={6}>
+        <Button
+          variant={(currentAns === 1) ? "contained" : "outlined"}
+          color="warning"
+          style={{ width: '100%', height: '20vh', fontSize: 50 }}
+          onClick={() => { setCurrentAns(1) }}
+        >
+          B
+        </Button>
+      </Grid>
+      <Grid item xs={6}>
+        <Button
+          variant={(currentAns === 2) ? "contained" : "outlined"}
+          color="error"
+          style={{ width: '100%', height: '20vh', fontSize: 50 }}
+          onClick={() => { setCurrentAns(2) }}
+        >
+          C
+        </Button>
+      </Grid>
+      <Grid item xs={6}>
+        <Button
+          variant={(currentAns === 3) ? "contained" : "outlined"}
+          color="success"
+          style={{ width: '100%', height: '20vh', fontSize: 50 }}
+          onClick={() => { setCurrentAns(3) }}
+        >
+          D
+        </Button>
+      </Grid>
+    </Grid>
+  </Container>
+}
+
+const AttendanceContent = () => {
+  return <Container>
+    <Grid container spacing={4} align="center">
+      <Grid item xs={12}>
+        <Typography variant="h3" component="h1" sx={{ p: '10vh' }}>
+          Attendance
+        </Typography>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Paper>
+          <AttendanceCalendar attendanceData={attendanceData} />
+        </Paper>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Paper>
+          <CircularPercentProgress size={300} value={80} fontSize={50} />
+        </Paper>
+      </Grid>
+    </Grid>
+  </Container>
+}
+
+const GradesContent = () => {
+  return <Container>
+    <Grid container spacing={4} align="center">
+      <Grid item xs={12}>
+        <Typography variant="h3" component="h1" sx={{ p: '10vh' }}>
+          Grades
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <CircularPercentProgress size={300} value={51} fontSize={50} />
+      </Grid>
+    </Grid>
+  </Container>
+}
+
 const Content = () => {
   const router = useRouter();
   const section = router.query.tab;
 
   switch (section) {
     case "grades":
-      return <>
-        <Container>
-          <Grid container spacing={4} align = "center">
-            <Grid item xs={12}>
-              <Typography variant="h3" component="h1" sx={{p: '10vh'}}>
-              Grades
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <CircularPercentProgress size={300} value={51} fontSize={50} />
-            </Grid>
-          </Grid>
-        </Container>
-      </>;
+      return <GradesContent />;
     case "attendance":
-      return <>
-      <Container>
-        <Grid container spacing={4} align = "center">
-          <Grid item xs={12}>
-            <Typography variant="h3" component="h1" sx={{p: '10vh'}}>
-            Attendance
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <AttendanceCalendar attendanceData={attendanceData}/>
-          </Grid>
-          <Grid item xs={6}>
-              <CircularPercentProgress size={300} value={80} fontSize={50} />
-            </Grid>
-        </Grid>
-      </Container>
-      </>;
+      return <AttendanceContent />;
     default:
-      return <>
-        <Container>
-          <Grid container spacing={4} align = "center">
-           <Grid item xs={12}>
-            <Typography variant="h3" component="h1" sx={{p: '10vh'}}>
-              Question 1
-            </Typography>
-           </Grid>
-
-           <Grid item xs={6}>
-            <Button variant="outlined"  sx={{ color: 'red', borderColor: 'red'}}  
-            style={{ width: '100%', height: '20vh', fontSize: '5vw'}}>A</Button>
-           </Grid>
-           <Grid item xs={6}>
-            <Button variant="outlined" sx={{ color: 'orange', borderColor: 'orange'}} 
-            style={{ width: '100%', height: '20vh', fontSize: '5vw'}}>B</Button>
-           </Grid>
-           <Grid item xs={6}>
-            <Button variant="outlined" sx={{ color: 'green', borderColor: 'green'}}
-            style={{ width: '100%', height: '20vh', fontSize: '5vw'}}>C</Button>
-           </Grid>
-           <Grid item xs={6}>
-            <Button variant="outlined" sx={{ color: '#2074d4', borderColor: '#2074d4'}}
-            style={{ width: '100%', height: '20vh', fontSize: '5vw'}}>D</Button>
-           </Grid>
-          </Grid>
-        </Container>
-      </>
+      return <QuizContent/>;
   }
 };
 

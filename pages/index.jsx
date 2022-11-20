@@ -3,11 +3,10 @@ import styles from '../styles/Home.module.css';
 import Button from '@mui/material/Button';
 import starIcon from '../public/img/star.svg';
 import mockup from '../public/img/mockup.png';
-import { useRouter } from 'next/router';
-import {AuthProvider, useAuth} from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
-const HomePage = () => {
-  const {signIn} = useAuth();
+export default function Home() {
+  const { signIn } = useAuth();
   return (
     <>
       <header className={styles.header}>
@@ -37,10 +36,4 @@ const HomePage = () => {
       </main>
     </>
   );
-}
-
-export default function Home() {
-  return  <AuthProvider>
-          <HomePage/>
-          </AuthProvider>
 }
