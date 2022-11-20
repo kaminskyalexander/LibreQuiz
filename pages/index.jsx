@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
-
 import Button from '@mui/material/Button';
-
 import starIcon from '../public/img/star.svg';
 import mockup from '../public/img/mockup.png';
+import { useRouter } from 'next/router';
+import {AuthProvider, useAuth} from '../contexts/AuthContext';
 
-export default function Home() {
+const HomePage = () => {
+  const {signIn} = useAuth();
   return (
     <>
       <header className={styles.header}>
@@ -14,8 +15,12 @@ export default function Home() {
           <Image src={starIcon} alt="Star icon" />
         </div>
         <div className={styles.buttons}>
-          <Button variant="contained">Log In</Button>
-          <Button variant="outlined">Sign Up</Button>
+          <Button variant="contained" onClick={signIn}>
+            Log In Student
+          </Button>
+          <Button variant="contained" onClick={signIn}>
+            Log In Teacher
+          </Button>
         </div>
       </header>
       <main className={`${styles.main} container`}>
@@ -32,4 +37,10 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export default function Home() {
+  return  <AuthProvider>
+          <HomePage/>
+          </AuthProvider>
 }
