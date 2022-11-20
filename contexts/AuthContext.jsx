@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
 import { auth, provider } from '../utils/firebase';
-import {signInWithPopup} from 'firebase/auth';
+import {signInWithPopup, signOut} from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -10,7 +10,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [currentUser, setCurrentUser] = useState();
+    const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
   
@@ -30,7 +30,13 @@ export function AuthProvider({ children }) {
             // ...
           });
     }
-  
+
+    function signOutUser()
+    {
+      signOut(auth);
+      router.push("/");
+    }
+
     function getUser() {
       return auth.currentUser;
     }
@@ -45,9 +51,9 @@ export function AuthProvider({ children }) {
     }, [])
   
     const value = {
-      currentUser,
       getUser,
       signIn,
+      signOutUser
     }
   
     return (

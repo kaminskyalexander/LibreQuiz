@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import {useAuth} from '../contexts/AuthContext';
 
 const drawerWidth = 240;
 
@@ -52,6 +53,7 @@ export default function PersistentDrawerLeft() {
   const [auth, setAuth] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {signOutUser} = useAuth();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,7 +87,7 @@ export default function PersistentDrawerLeft() {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button color="inherit">Log Out</Button>
+            <Button color="inherit" onClick={signOutUser}>Log Out</Button>
             {auth && (
               <div>
                 <IconButton
