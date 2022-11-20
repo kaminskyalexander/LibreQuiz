@@ -126,19 +126,19 @@ const QuizActiveContent = () => {
 
 const AttendanceContent = () => {
   return <Container>
-    <Grid container spacing={4} align="center">
+    <Grid container spacing={4} sx={{ pt: 2, pb: 2, mb: 10}}>
       <Grid item xs={12}>
-        <Typography variant="h3" component="h1" sx={{ p: '10vh' }}>
+        <Typography variant="h3" component="h1" sx={{ pt: 2, pb: 2 }}>
           Attendance
         </Typography>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Paper>
+        <Paper elevation={3} align="center"sx={{ height: "100%" }} >
           <AttendanceCalendar attendanceData={attendanceData} />
         </Paper>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Paper>
+        <Paper elevation={3} align="center" sx={{ pt: 2, pb: 2, height: "100%" }} >
           <CircularPercentProgress size={300} value={80} fontSize={50} />
         </Paper>
       </Grid>
@@ -148,14 +148,16 @@ const AttendanceContent = () => {
 
 const GradesContent = () => {
   return <Container>
-    <Grid container spacing={4} align="center">
+    <Grid container spacing={4} sx={{ pt: 2, pb: 2, mb: 10}}>
       <Grid item xs={12}>
-        <Typography variant="h3" component="h1" sx={{ p: '10vh' }}>
+        <Typography variant="h3" component="h1" sx={{ pt: 2, pb: 2 }}>
           Grades
         </Typography>
       </Grid>
-      <Grid item xs={12}>
-        <CircularPercentProgress size={300} value={51} fontSize={50} />
+      <Grid item xs={12} align="center">
+        <Paper elevation={3} align="center" style={{display: 'inline-block'}} sx={{ p:2, height: "100%" }} >
+          <CircularPercentProgress size={300} value={80} fontSize={50} />
+        </Paper>
       </Grid>
     </Grid>
   </Container>
