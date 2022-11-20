@@ -3,32 +3,11 @@ import styles from '../styles/Home.module.css';
 import Button from '@mui/material/Button';
 import starIcon from '../public/img/star.svg';
 import mockup from '../public/img/mockup.png';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth, provider } from '../utils/firebase';
+import { useRouter } from 'next/router';
+import {AuthProvider, useAuth} from '../contexts/AuthContext';
 
-export default function Home() {
-  function signIn() {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // ...
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
-  }
-
+const HomePage = () => {
+  const {signIn} = useAuth();
   return (
     <>
       <header className={styles.header}>
@@ -37,7 +16,10 @@ export default function Home() {
         </div>
         <div className={styles.buttons}>
           <Button variant="contained" onClick={signIn}>
-            Log In
+            Log In Student
+          </Button>
+          <Button variant="contained" onClick={signIn}>
+            Log In Teacher
           </Button>
         </div>
       </header>
@@ -55,4 +37,10 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export default function Home() {
+  return  <AuthProvider>
+          <HomePage/>
+          </AuthProvider>
 }
