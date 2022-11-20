@@ -16,6 +16,7 @@ import Alert from '@mui/material/Alert';
 import InfoIcon from '@mui/icons-material/Info';
 import Stack from '@mui/material/Stack';
 import Checkbox from '@mui/material/Checkbox';
+import GradeTimeline from '../../components/GradeTimeline'
 
 const attendanceData = {
   "2022-10-04": { attended: true },
@@ -154,9 +155,14 @@ const GradesContent = () => {
           Grades
         </Typography>
       </Grid>
-      <Grid item xs={12} align="center">
-        <Paper elevation={3} align="center" style={{display: 'inline-block'}} sx={{ p:2, height: "100%" }} >
+      <Grid item xs={12} md={6} align="center">
+        <Paper elevation={3} align="center" sx={{ p:2, height: "100%" }} >
           <CircularPercentProgress size={300} value={80} fontSize={50} />
+        </Paper>
+      </Grid>
+      <Grid item xs={12} md={6} align="center">
+        <Paper elevation={3} align="center" sx={{ p:2, height: "100%" }} >
+          <GradeTimeline/>
         </Paper>
       </Grid>
     </Grid>

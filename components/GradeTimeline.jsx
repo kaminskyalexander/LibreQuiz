@@ -8,46 +8,46 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 
 export default function GradeTimeline() {
     return (
-    <Timeline position="alternate">
+    <Timeline>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          09:30 am
+          December 18
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Eat</TimelineContent>
+        <TimelineContent>4/6 Correct Answers</TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          10:00 am
+          December 13
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Code</TimelineContent>
+        <TimelineContent>6/6 Correct Answers</TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          12:00 am
+          December 11
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Sleep</TimelineContent>
+        <TimelineContent>5/6 Correct Answers</TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          9:00 am
+          December 6
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Repeat</TimelineContent>
+        <TimelineContent>Missed Class</TimelineContent>
       </TimelineItem>
     </Timeline>
   );
