@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
 import { auth, provider } from '../utils/firebase';
-import {signInWithPopup, signOut} from 'firebase/auth';
+import { signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
 
 const AuthContext = createContext();
 
