@@ -38,7 +38,7 @@ export default function FormDialog({open, setOpen, joinClass}) {
           <Button onClick={() => {
             handleClose(true);
             if(userInput !== ""){
-              joinClass(userInput);
+              joinClass(userInput.trim());
             }
             }}>Join</Button>
         </DialogActions>
