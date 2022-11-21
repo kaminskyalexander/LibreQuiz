@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
-import { auth, provider } from '../utils/firebase';
+import { auth, provider, db} from '../utils/firebase';
 import { signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
+import {setDoc, doc, addDoc, arrayUnion} from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -16,10 +17,15 @@ export function AuthProvider({ children }) {
   
     function signIn() {
         signInWithPopup(auth, provider).then((result) => {
-        const user = result.user;
-        setCurrentUser(user);
-        router.push("/home");})
-        .catch((error) => {
+          setDoc(doc(db, "users", result.user.uid), {
+            name: result.user.displayName,
+            enrolledCourses: arrayUnion(),
+            ownedCourses: arrayUnion()
+          });
+          router.push("/home");
+          const user = result.user;
+          setCurrentUser(user);
+        }, (error) => {
             // Handle Errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -28,7 +34,7 @@ export function AuthProvider({ children }) {
             // The AuthCredential type that was used.
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
-          });
+        })
     }
 
     function signOutUser()

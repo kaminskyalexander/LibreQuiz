@@ -8,48 +8,84 @@ import Fab from '@mui/material/Fab';
 import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {useAuth} from '../contexts/AuthContext';
+import {getDoc, doc, collection, getDocs} from 'firebase/firestore';
+import {db} from '../utils/firebase';
+import { useEffect, useState} from 'react';
 
-const courses = [
-  {
-    name: 'CS 135',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/cs.jpg',
-    href: '#',
-  },
-  {
-    name: 'MATH 135',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/proofs.jpg',
-    href: '#',
-  },
-  {
-    name: 'MATH 137',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/calc.jpg',
-    href: '#',
-  },
-  {
-    name: 'PHYS 121',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/physics.jpg',
-    href: '#',
-  },
-  {
-    name: 'ECON 101',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/stocks.jpg',
-    href: '#',
-  },
-];
+// const courses = [
+//   {
+//     name: 'CS 135',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/cs.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'MATH 135',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/proofs.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'MATH 137',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/calc.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'PHYS 121',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/physics.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'ECON 101',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/stocks.jpg',
+//     href: '#',
+//   },
+// ];
 
 export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
+  const [courses, setCourses] = useState([]);
+
+  
+ // const ownedCourseIds = userSnap.data().ownedCourses;
+
+  const { getUser } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+    const userDoc = doc(db, "users", getUser().uid);
+    
+    const userSnap = await getDoc(userDoc);
+    console.log(userSnap.data());
+    const enrolledCourses = userSnap.data().enrolledCourses;
+    //console.log(enrolledCourseIds);
+    let coursesTemp = [];
+
+    for(const courseId of enrolledCourses)
+    {
+      const courseDoc = doc(db, "courses", courseId);
+      const courseSnap = await getDoc(courseDoc);
+      const courseData = courseSnap.data();
+      coursesTemp.push({...courseData, href: "courses/"+courseId});
+    }
+    setCourses(coursesTemp);
+  })();
+  }, []);
+  
+  // enrolledCourseIds.forEach((courseId) =>{
+  //   const courseDoc = doc(db, "courses", courseId);
+  //   const courseSnap = await getDoc(courseDoc);
+  // });
 
   const [addCourseDialogOpen, setAddCourseDialogOpen] = React.useState(false);
 
