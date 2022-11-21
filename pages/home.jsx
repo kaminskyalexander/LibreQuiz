@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {useAuth} from '../contexts/AuthContext';
-import {getDoc, doc, collection, getDocs} from 'firebase/firestore';
+import {getDoc, doc, updateDoc, arrayUnion} from 'firebase/firestore';
 import {db} from '../utils/firebase';
 import { useEffect, useState} from 'react';
 
@@ -61,14 +61,12 @@ export default function Home() {
 
   const { getUser } = useAuth();
 
-  useEffect(() => {
-    (async () => {
+  async function updateCourses()
+  {
     const userDoc = doc(db, "users", getUser().uid);
     
     const userSnap = await getDoc(userDoc);
-    console.log(userSnap.data());
     const enrolledCourses = userSnap.data().enrolledCourses;
-    //console.log(enrolledCourseIds);
     let coursesTemp = [];
 
     for(const courseId of enrolledCourses)
@@ -79,13 +77,26 @@ export default function Home() {
       coursesTemp.push({...courseData, href: "courses/"+courseId});
     }
     setCourses(coursesTemp);
-  })();
+  }
+
+  useEffect(() => {
+    updateCourses();
   }, []);
   
-  // enrolledCourseIds.forEach((courseId) =>{
-  //   const courseDoc = doc(db, "courses", courseId);
-  //   const courseSnap = await getDoc(courseDoc);
-  // });
+  function joinClass(code)
+  {
+      getDoc(doc(db, "courses", code)).then((classSnap) => {
+      
+      if(classSnap.exists())
+      {
+       // console.log(classSnap);
+        updateDoc(doc(db, "users", getUser().uid), {
+          enrolledCourses: arrayUnion(code)
+        });
+      }
+    });
+    updateCourses();
+  }
 
   const [addCourseDialogOpen, setAddCourseDialogOpen] = React.useState(false);
 
@@ -148,6 +159,7 @@ export default function Home() {
       <JoinClassDialog
         open={addCourseDialogOpen}
         setOpen={setAddCourseDialogOpen}
+        joinClass={joinClass}
       />
     </>
   );
