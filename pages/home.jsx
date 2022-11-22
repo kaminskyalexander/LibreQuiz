@@ -64,26 +64,6 @@ export default function Home() {
 
   const { getUser } = useAuth();
 
-  async function updateCourses() {
-    const userDoc = doc(db, "users", getUser().uid);
-
-    const userSnap = await getDoc(userDoc);
-    const enrolledCourses = userSnap.data().enrolledCourses;
-    let coursesTemp = [];
-
-    for (const courseId of enrolledCourses) {
-      const courseDoc = doc(db, "courses", courseId);
-      const courseSnap = await getDoc(courseDoc);
-      const courseData = courseSnap.data();
-      coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
-    }
-    setCourses(coursesTemp);
-  }
-
-  useEffect(() => {
-    updateCourses();
-  }, []);
-
   function joinClass(id) {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
