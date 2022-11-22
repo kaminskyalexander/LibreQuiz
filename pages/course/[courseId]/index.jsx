@@ -202,9 +202,9 @@ export default function Class() {
             setValue(newValue);
           }}
         >
-          <BottomNavigationAction label="Quiz" icon={<QuizIcon />} onClick={() => { router.push('/class'); }} />
-          <BottomNavigationAction label="Grades" icon={<InsightsIcon />} onClick={() => { router.push('/class/grades'); }} />
-          <BottomNavigationAction label="Attendance" icon={<EventAvailableIcon />} onClick={() => { router.push('/class/attendance'); }} />
+          <BottomNavigationAction label="Quiz" icon={<QuizIcon />} onClick={() => { router.push('/course/'+router.query.courseId); }} />
+          <BottomNavigationAction label="Grades" icon={<InsightsIcon />} onClick={() => { router.push('/course/'+router.query.courseId+'/grades'); }} />
+          <BottomNavigationAction label="Attendance" icon={<EventAvailableIcon />} onClick={() => { router.push('/course/'+router.query.courseId+'/attendance'); }} />
         </BottomNavigation>
       </Paper>
     </>
