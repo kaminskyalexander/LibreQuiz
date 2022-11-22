@@ -1,5 +1,6 @@
-import AttendanceCalendar from "../../components/AttendanceCalendar"
-import CircularPercentProgress from "../../components/CircularPercentProgress"
+import AttendanceCalendar from "../../../components/AttendanceCalendar"
+import CircularPercentProgress from "../../../components/CircularPercentProgress"
+import GradeTimeline from '../../../components/GradeTimeline'
 import * as React from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -16,7 +17,6 @@ import Alert from '@mui/material/Alert';
 import InfoIcon from '@mui/icons-material/Info';
 import Stack from '@mui/material/Stack';
 import Checkbox from '@mui/material/Checkbox';
-import GradeTimeline from '../../components/GradeTimeline'
 
 const attendanceData = {
   "2022-10-04": { attended: true },
@@ -73,11 +73,13 @@ const QuizNonActiveContent = () => {
 const QuizActiveContent = () => {
   const [currentAns, setCurrentAns] = React.useState(null);
 
+  const router = useRouter();
+
   return <Container>
     <Grid container spacing={4} align="center">
       <Grid item xs={12}>
         <Typography variant="h3" component="h1" sx={{ pt: '10vh', pb: '10vh' }}>
-          Question 1
+          {router.query.courseId}
         </Typography>
       </Grid>
 

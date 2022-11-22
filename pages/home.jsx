@@ -114,7 +114,7 @@ export default function Home() {
         const courseDoc = doc(db, "courses", courseId);
         const courseSnap = await getDoc(courseDoc)
         const courseData = courseSnap.data();
-        coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
+        coursesTemp.push({ id: courseId, ...courseData, href: "course/" + courseId });
       }
 
       if (courses.length !== coursesTemp.length) {
