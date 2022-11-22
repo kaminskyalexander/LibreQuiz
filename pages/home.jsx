@@ -127,9 +127,10 @@ export default function Home() {
   const unsubscribe = onSnapshot(doc(db, "users", getUser().uid), (snapshot) => {
     (async () => {
       const enrolledCourses = snapshot.data().enrolledCourses;
+      const ownedCourses = snapshot.data().ownedCourses;
       let coursesTemp = [];
 
-      for (const courseId of enrolledCourses) {
+      for (const courseId of enrolledCourses.concat(ownedCourses)) {
         const courseDoc = doc(db, "courses", courseId);
         const courseSnap = await getDoc(courseDoc)
         const courseData = courseSnap.data();
