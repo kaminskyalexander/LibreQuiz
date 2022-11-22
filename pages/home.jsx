@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {useAuth} from '../contexts/AuthContext';
-import {getDoc, doc, updateDoc, arrayUnion} from 'firebase/firestore';
+import {getDoc, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import {db} from '../utils/firebase';
 import { useEffect, useState} from 'react';
 
@@ -74,7 +74,7 @@ export default function Home() {
       const courseDoc = doc(db, "courses", courseId);
       const courseSnap = await getDoc(courseDoc);
       const courseData = courseSnap.data();
-      coursesTemp.push({...courseData, href: "courses/"+courseId});
+      coursesTemp.push({id: courseId, ...courseData, href: "courses/"+courseId});
     }
     setCourses(coursesTemp);
   }
@@ -83,15 +83,30 @@ export default function Home() {
     updateCourses();
   }, []);
   
-  function joinClass(code)
+  function joinClass(id)
   {
-      getDoc(doc(db, "courses", code)).then((classSnap) => {
+      getDoc(doc(db, "courses", id)).then((classSnap) => {
       
       if(classSnap.exists())
       {
        // console.log(classSnap);
         updateDoc(doc(db, "users", getUser().uid), {
-          enrolledCourses: arrayUnion(code)
+          enrolledCourses: arrayUnion(id)
+        });
+      }
+    });
+    updateCourses();
+  }
+
+  function removeClass(id)
+  {
+    getDoc(doc(db, "courses", id)).then((classSnap) => {
+      
+      if(classSnap.exists())
+      {
+       // console.log(classSnap);
+        updateDoc(doc(db, "users", getUser().uid), {
+          enrolledCourses: arrayRemove(id)
         });
       }
     });
@@ -137,6 +152,7 @@ export default function Home() {
                 description={course.description}
                 thumbnail={course.thumbnail}
                 href={course.href}
+                onRemove={() => {removeClass(course.id)}}
               />
             </Grid>
           ))}

@@ -6,7 +6,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
 
-export default function CourseCard({ name, time, description, thumbnail, href }) {
+export default function CourseCard({ name, time, description, thumbnail, href, onRemove }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
@@ -42,9 +42,9 @@ export default function CourseCard({ name, time, description, thumbnail, href })
               <MoreVertIcon />
             </IconButton>
           }
-          sx={{pb: 0}}
+          sx={{ pb: 0 }}
         />
-        <CardContent sx={{pt: 0}}>
+        <CardContent sx={{ pt: 0 }}>
           <Typography variant="body2" color="text.secondary">
             {time}
           </Typography>
@@ -54,22 +54,22 @@ export default function CourseCard({ name, time, description, thumbnail, href })
         </CardContent>
       </CardActionArea>
       <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}>Pin</MenuItem>
-          <MenuItem onClick={handleClose}>Remove</MenuItem>
-        </Menu>
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {/* <MenuItem onClick={handleClose}>Pin</MenuItem> */}
+        <MenuItem onClick={() => { onRemove(); handleClose(); }}>Remove</MenuItem>
+      </Menu>
     </Card>
   );
 }
