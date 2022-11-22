@@ -3,8 +3,10 @@ import CourseCard from '../components/CourseCard';
 import JoinClassDialog from '../components/JoinClassDialog';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Fab from '@mui/material/Fab';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -126,34 +128,39 @@ export default function Home() {
 
   const [addCourseDialogOpen, setAddCourseDialogOpen] = React.useState(false);
 
-  const handleClickAddCourse = () => {
+  const handleClickJoinCourse = () => {
     setAddCourseDialogOpen(true);
   };
 
   return (
     <>
       <Container>
-        <Grid container sx={{ pt: 4 }}>
-          <Grid item xs>
+        <Stack container sx={{ pt: 4 }} justifyContent="space-between" direction="row">
             <Typography variant="h3" component="h1">
               My Courses
             </Typography>
-          </Grid>
 
-          {isMobile && (
-            <Grid item xs="auto">
+          {isMobile && (<Stack spacing={4} direction="row">
+              <Button
+                variant="text"
+                color="primary"
+                aria-label="create"
+                onClick={handleClickJoinCourse}
+              >
+                Create a Course
+              </Button>
               <Fab
                 variant="extended"
                 color="primary"
-                aria-label="add"
-                onClick={handleClickAddCourse}
+                aria-label="join"
+                onClick={handleClickJoinCourse}
               >
                 <AddIcon sx={{ mr: 1 }} />
-                Add a Course
+                Join a Course
               </Fab>
-            </Grid>
+          </Stack>
           )}
-        </Grid>
+        </Stack>
         <Grid container spacing={2} sx={{ pt: 4, pb: 4 }}>
           {courses.map((course, i) => (
             <Grid item xs={12} sm={4} md={3} key={`course-${i}`}>
@@ -178,7 +185,7 @@ export default function Home() {
             right: (theme) => theme.spacing(2),
           }}
           aria-label="add"
-          onClick={handleClickAddCourse}
+          onClick={handleClickJoinCourse}
         >
           <AddIcon />
         </Fab>
