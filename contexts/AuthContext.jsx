@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
+
 import { auth, provider, db} from '../utils/firebase';
 import { signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
 import {setDoc, doc, addDoc, arrayUnion, updateDoc, getDoc} from 'firebase/firestore';
