@@ -1,86 +1,181 @@
 import * as React from 'react';
 import CourseCard from '../components/CourseCard';
 import JoinClassDialog from '../components/JoinClassDialog';
+import CreateClassDialog from '../components/CreateClassDialog';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Fab from '@mui/material/Fab';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useAuth } from '../contexts/AuthContext';
+import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot, setDoc } from 'firebase/firestore';
+import { db } from '../utils/firebase';
+import { useEffect, useState } from 'react';
 
-const courses = [
-  {
-    name: 'CS 135',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/cs.jpg',
-    href: '#',
-  },
-  {
-    name: 'MATH 135',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/proofs.jpg',
-    href: '#',
-  },
-  {
-    name: 'MATH 137',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/calc.jpg',
-    href: '#',
-  },
-  {
-    name: 'PHYS 121',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/physics.jpg',
-    href: '#',
-  },
-  {
-    name: 'ECON 101',
-    time: '10:00 AM',
-    description: 'Section 012',
-    thumbnail: '/img/banners/stocks.jpg',
-    href: '#',
-  },
-];
+// const courses = [
+//   {
+//     name: 'CS 135',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/cs.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'MATH 135',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/proofs.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'MATH 137',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/calc.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'PHYS 121',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/physics.jpg',
+//     href: '#',
+//   },
+//   {
+//     name: 'ECON 101',
+//     time: '10:00 AM',
+//     description: 'Section 012',
+//     thumbnail: '/img/banners/stocks.jpg',
+//     href: '#',
+//   },
+// ];
 
 export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
+  const [courses, setCourses] = useState([]);
 
-  const [addCourseDialogOpen, setAddCourseDialogOpen] = React.useState(false);
 
-  const handleClickAddCourse = () => {
-    setAddCourseDialogOpen(true);
-  };
+  // const ownedCourseIds = userSnap.data().ownedCourses;
+
+  const { getUser } = useAuth();
+
+  async function updateCourses() {
+    const userDoc = doc(db, "users", getUser().uid);
+
+    const userSnap = await getDoc(userDoc);
+    const enrolledCourses = userSnap.data().enrolledCourses;
+    let coursesTemp = [];
+
+    for (const courseId of enrolledCourses) {
+      const courseDoc = doc(db, "courses", courseId);
+      const courseSnap = await getDoc(courseDoc);
+      const courseData = courseSnap.data();
+      coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
+    }
+    setCourses(coursesTemp);
+  }
+
+  useEffect(() => {
+    updateCourses();
+  }, []);
+
+  function joinClass(id) {
+    getDoc(doc(db, "courses", id)).then((classSnap) => {
+
+      if (classSnap.exists()) {
+        // console.log(classSnap);
+        updateDoc(doc(db, "users", getUser().uid), {
+          enrolledCourses: arrayUnion(id)
+        });
+      }
+    });
+  }
+
+  function removeClass(id) {
+    getDoc(doc(db, "courses", id)).then((classSnap) => {
+
+      if (classSnap.exists()) {
+        // console.log(classSnap);
+        updateDoc(doc(db, "users", getUser().uid), {
+          enrolledCourses: arrayRemove(id)
+        });
+      }
+    });
+  }
+
+  function createClass(id, name, description, time, thumbnail) {
+    setDoc(
+      doc(db, "courses", id),
+      {
+        name: name,
+        time: time,
+        description: description,
+        thumbnail: thumbnail
+      }
+    );
+
+    updateDoc(doc(db, "users", getUser().uid), {
+      ownedCourses: arrayUnion(id)
+    });
+  }
+
+  const unsubscribe = onSnapshot(doc(db, "users", getUser().uid), (snapshot) => {
+    (async () => {
+      const enrolledCourses = snapshot.data().enrolledCourses;
+      const ownedCourses = snapshot.data().ownedCourses;
+      let coursesTemp = [];
+
+      for (const courseId of enrolledCourses.concat(ownedCourses)) {
+        const courseDoc = doc(db, "courses", courseId);
+        const courseSnap = await getDoc(courseDoc)
+        const courseData = courseSnap.data();
+        coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
+      }
+
+      if (courses.length !== coursesTemp.length) {
+        setCourses(coursesTemp);
+      }
+    })();
+  });
+
+
+  const [joinCourseDialogOpen, setJoinCourseDialogOpen] = React.useState(false);
+  const [createCourseDialogOpen, setCreateCourseDialogOpen] = React.useState(false);
 
   return (
     <>
       <Container>
-        <Grid container sx={{ pt: 4 }}>
-          <Grid item xs>
-            <Typography variant="h3" component="h1">
-              My Courses
-            </Typography>
-          </Grid>
+        <Stack container sx={{ pt: 4 }} justifyContent="space-between" direction="row">
+          <Typography variant="h3" component="h1">
+            My Courses
+          </Typography>
 
-          {isMobile && (
-            <Grid item xs="auto">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                onClick={handleClickAddCourse}
-              >
-                <AddIcon sx={{ mr: 1 }} />
-                Add a Course
-              </Fab>
-            </Grid>
+          {isMobile && (<Stack spacing={4} direction="row">
+            <Button
+              variant="text"
+              color="primary"
+              aria-label="create"
+              onClick={() => { setCreateCourseDialogOpen(true); }}
+            >
+              Create a Course
+            </Button>
+            <Fab
+              variant="extended"
+              color="primary"
+              aria-label="join"
+              onClick={() => { setJoinCourseDialogOpen(true); }}
+            >
+              <AddIcon sx={{ mr: 1 }} />
+              Join a Course
+            </Fab>
+          </Stack>
           )}
-        </Grid>
+        </Stack>
         <Grid container spacing={2} sx={{ pt: 4, pb: 4 }}>
           {courses.map((course, i) => (
             <Grid item xs={12} sm={4} md={3} key={`course-${i}`}>
@@ -90,28 +185,37 @@ export default function Home() {
                 description={course.description}
                 thumbnail={course.thumbnail}
                 href={course.href}
+                onRemove={() => { removeClass(course.id) }}
               />
             </Grid>
           ))}
         </Grid>
       </Container>
-      {!isMobile && (
-        <Fab
-          color="primary"
-          sx={{
-            position: 'fixed',
-            bottom: (theme) => theme.spacing(2),
-            right: (theme) => theme.spacing(2),
-          }}
-          aria-label="add"
-          onClick={handleClickAddCourse}
-        >
-          <AddIcon />
-        </Fab>
-      )}
+      {
+        !isMobile && (
+          <Fab
+            color="primary"
+            sx={{
+              position: 'fixed',
+              bottom: (theme) => theme.spacing(2),
+              right: (theme) => theme.spacing(2),
+            }}
+            aria-label="add"
+            onClick={() => { setJoinCourseDialogOpen(true); }}
+          >
+            <AddIcon />
+          </Fab>
+        )
+      }
       <JoinClassDialog
-        open={addCourseDialogOpen}
-        setOpen={setAddCourseDialogOpen}
+        open={joinCourseDialogOpen}
+        setOpen={setJoinCourseDialogOpen}
+        joinClass={joinClass}
+      />
+      <CreateClassDialog
+        open={createCourseDialogOpen}
+        setOpen={setCreateCourseDialogOpen}
+        createClass={createClass}
       />
     </>
   );

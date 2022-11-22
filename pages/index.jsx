@@ -15,10 +15,7 @@ export default function Home() {
         </div>
         <div className={styles.buttons}>
           <Button variant="contained" onClick={signIn}>
-            Log In Student
-          </Button>
-          <Button variant="contained" onClick={signIn}>
-            Log In Teacher
+            Log In
           </Button>
         </div>
       </header>
