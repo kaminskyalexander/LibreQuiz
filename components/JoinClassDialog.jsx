@@ -8,10 +8,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function FormDialog({open, setOpen, joinClass}) {
+  const [userInput, setUserInput] = React.useState("");
+
   const handleClose = () => {
+    setUserInput("");
     setOpen(false);
   };
-  const [userInput, setUserInput] = React.useState("");
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -36,10 +38,10 @@ export default function FormDialog({open, setOpen, joinClass}) {
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
           <Button onClick={() => {
-            handleClose();
             if(userInput !== ""){
               joinClass(userInput.trim());
             }
+            handleClose();
             }}>Join</Button>
         </DialogActions>
     </Dialog>
