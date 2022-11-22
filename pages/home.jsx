@@ -1,6 +1,7 @@
 import * as React from 'react';
 import CourseCard from '../components/CourseCard';
 import JoinClassDialog from '../components/JoinClassDialog';
+import CreateClassDialog from '../components/CreateClassDialog';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -11,7 +12,7 @@ import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAuth } from '../contexts/AuthContext';
-import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from 'firebase/firestore';
+import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { useEffect, useState } from 'react';
 
@@ -107,6 +108,22 @@ export default function Home() {
     });
   }
 
+  function createClass(id, name, description, time, thumbnail) {
+    setDoc(
+      doc(db, "courses", id),
+      {
+        name: name,
+        time: time,
+        description: description,
+        thumbnail: thumbnail
+      }
+    );
+
+    updateDoc(doc(db, "users", getUser().uid), {
+      ownedCourses: arrayUnion(id)
+    });
+  }
+
   const unsubscribe = onSnapshot(doc(db, "users", getUser().uid), (snapshot) => {
     (async () => {
       const enrolledCourses = snapshot.data().enrolledCourses;
@@ -126,38 +143,35 @@ export default function Home() {
   });
 
 
-  const [addCourseDialogOpen, setAddCourseDialogOpen] = React.useState(false);
-
-  const handleClickJoinCourse = () => {
-    setAddCourseDialogOpen(true);
-  };
+  const [joinCourseDialogOpen, setJoinCourseDialogOpen] = React.useState(false);
+  const [createCourseDialogOpen, setCreateCourseDialogOpen] = React.useState(false);
 
   return (
     <>
       <Container>
         <Stack container sx={{ pt: 4 }} justifyContent="space-between" direction="row">
-            <Typography variant="h3" component="h1">
-              My Courses
-            </Typography>
+          <Typography variant="h3" component="h1">
+            My Courses
+          </Typography>
 
           {isMobile && (<Stack spacing={4} direction="row">
-              <Button
-                variant="text"
-                color="primary"
-                aria-label="create"
-                onClick={handleClickJoinCourse}
-              >
-                Create a Course
-              </Button>
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="join"
-                onClick={handleClickJoinCourse}
-              >
-                <AddIcon sx={{ mr: 1 }} />
-                Join a Course
-              </Fab>
+            <Button
+              variant="text"
+              color="primary"
+              aria-label="create"
+              onClick={() => { setCreateCourseDialogOpen(true); }}
+            >
+              Create a Course
+            </Button>
+            <Fab
+              variant="extended"
+              color="primary"
+              aria-label="join"
+              onClick={() => { setJoinCourseDialogOpen(true); }}
+            >
+              <AddIcon sx={{ mr: 1 }} />
+              Join a Course
+            </Fab>
           </Stack>
           )}
         </Stack>
@@ -176,24 +190,31 @@ export default function Home() {
           ))}
         </Grid>
       </Container>
-      {!isMobile && (
-        <Fab
-          color="primary"
-          sx={{
-            position: 'fixed',
-            bottom: (theme) => theme.spacing(2),
-            right: (theme) => theme.spacing(2),
-          }}
-          aria-label="add"
-          onClick={handleClickJoinCourse}
-        >
-          <AddIcon />
-        </Fab>
-      )}
+      {
+        !isMobile && (
+          <Fab
+            color="primary"
+            sx={{
+              position: 'fixed',
+              bottom: (theme) => theme.spacing(2),
+              right: (theme) => theme.spacing(2),
+            }}
+            aria-label="add"
+            onClick={() => { setJoinCourseDialogOpen(true); }}
+          >
+            <AddIcon />
+          </Fab>
+        )
+      }
       <JoinClassDialog
-        open={addCourseDialogOpen}
-        setOpen={setAddCourseDialogOpen}
+        open={joinCourseDialogOpen}
+        setOpen={setJoinCourseDialogOpen}
         joinClass={joinClass}
+      />
+      <CreateClassDialog
+        open={createCourseDialogOpen}
+        setOpen={setCreateCourseDialogOpen}
+        createClass={createClass}
       />
     </>
   );
