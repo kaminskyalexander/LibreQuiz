@@ -16,51 +16,10 @@ import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot, setDoc } f
 import { db } from '../utils/firebase';
 import { useEffect, useState } from 'react';
 
-// const courses = [
-//   {
-//     name: 'CS 135',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/cs.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'MATH 135',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/proofs.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'MATH 137',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/calc.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'PHYS 121',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/physics.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'ECON 101',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/stocks.jpg',
-//     href: '#',
-//   },
-// ];
-
 export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
   const [courses, setCourses] = useState([]);
-
-
-  // const ownedCourseIds = userSnap.data().ownedCourses;
 
   const { getUser } = useAuth();
 
@@ -68,7 +27,6 @@ export default function Home() {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        // console.log(classSnap);
         updateDoc(doc(db, "users", getUser().uid), {
           enrolledCourses: arrayUnion(id)
         });
@@ -80,7 +38,6 @@ export default function Home() {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        // console.log(classSnap);
         updateDoc(doc(db, "users", getUser().uid), {
           enrolledCourses: arrayRemove(id)
         });
