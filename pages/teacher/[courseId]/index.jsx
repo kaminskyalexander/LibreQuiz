@@ -14,7 +14,7 @@ export default function Teacher() {
 
   const router = useRouter();
 
-  let [quizzes, setQuizzes] = React.useState([]);
+  const [quizzes, setQuizzes] = React.useState([]);
 
   const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes"), (snapshot) => {
     (async () => {

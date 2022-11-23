@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from "@mui/material/Container"
@@ -6,21 +7,39 @@ import Stack from "@mui/material/Stack"
 import ListTable from '../../../../components/ListTable';
 import CreateQuizQuestionDialog from '../../../../components/CreateQuizQuestionDialog';
 
+import { db } from '../../../../utils/firebase';
+import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc } from "firebase/firestore";
+
+
 export default function Quiz() {
-  let [questions, setQuestions] = React.useState([
-    { id: 0, name: 'What does (+ 2 2) evaluate to?' },
-    { id: 1, name: 'define is an example of an ____' },
-    { id: 2, name: 'Which of the following is a value?' },
-    { id: 3, name: 'Racket is a ______ programming langugage' },
-  ]);
+  const router = useRouter();
+  const [questions, setQuestions] = React.useState([]);
+
+  const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"), (snapshot) => {
+    (async () => {
+      let questionsTemp = [];
+      snapshot.forEach((doc) => {
+        questionsTemp.push({ id: doc.id, name: doc.data().question });
+      })
+
+      if (questionsTemp.length !== questions.length) {
+        setQuestions(questionsTemp);
+      }
+    })();
+  });
 
   function removeQuestion(id) {
-    const newQuestions = quizzes.filter((question) => question.id !== id);
-    setQuizzes(newQuestions);
+    deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", id));
+    deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", id));
+    deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "submission", id));
   }
 
   function createQuestion(question, correctOptions, options) {
-
+    addDoc(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"),
+      { question: question, options: options }).then(questionDoc => {
+        setDoc(doc(db, "courses", router.query.courseId, "answers", router.query.quizId, "questions", questionDoc.id),
+          { correctOptions: correctOptions });
+      });
   }
 
   const [createQuestionDialogOpen, setCreateQuestionDialogOpen] = React.useState(false);
