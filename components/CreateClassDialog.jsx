@@ -16,7 +16,7 @@ export default function FormDialog({open, setOpen, createClass}) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Create a Course</DialogTitle>
         <DialogContent>
           <DialogContentText>
