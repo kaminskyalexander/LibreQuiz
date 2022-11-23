@@ -11,10 +11,10 @@ import Checkbox from '@mui/material/Checkbox';
 import Divider from "@mui/material/Divider"
 
 export default function FormDialog({ open, setOpen, createQuizQuestion }) {
-  const [userInput, setUserInput] = React.useState("");
+  const [userInput, setUserInput] = React.useState({ question: "", correctOptions: [false, false, false, false], options: ["", "", "", ""] });
 
   const handleClose = () => {
-    setUserInput("");
+    setUserInput({ question: "", correctOptions: [false, false, false, false], options: ["", "", "", ""] });
     setOpen(false);
   };
 
@@ -29,27 +29,45 @@ export default function FormDialog({ open, setOpen, createQuizQuestion }) {
           label="Question"
           fullWidth
           variant="standard"
-          value={userInput}
+          value={userInput.question}
           onChange={(e) => {
-            setUserInput(e.target.value);
+            setUserInput({ ...userInput, question: e.target.value });
           }}
         />
-        <DialogContentText sx={{pt: 4}}>
+        <DialogContentText sx={{ pt: 4 }}>
           Check the correct answers.
         </DialogContentText>
         {["A", "B", "C", "D"].map((q, i) => (
           <Stack direction="row" alignItems="flex-end">
-            <Checkbox />
+            <Checkbox
+              checked={userInput.correctOptions[i]}
+              onChange={(e) => {
+                // basically this replaces the element at correctOptions[i] with e.target.value
+                setUserInput({
+                  ...userInput, correctOptions: (() => {
+                    let correctOptionsCopy = userInput.correctOptions;
+                    correctOptionsCopy[i] = !correctOptionsCopy[i];
+                    return correctOptionsCopy;
+                  })()
+                });
+              }}
+            />
             <TextField
-              autoFocus
               margin="dense"
               id={"option-" + q}
               label={"Option " + q}
               fullWidth
               variant="standard"
-              value={userInput}
+              value={userInput.options[i]}
               onChange={(e) => {
-                setUserInput(e.target.value);
+                // basically this replaces the element at options[i] with e.target.value
+                setUserInput({
+                  ...userInput, options: (() => {
+                    let optionsCopy = userInput.options;
+                    optionsCopy[i] = e.target.value;
+                    return optionsCopy;
+                  })()
+                });
               }}
             />
           </Stack>
@@ -58,9 +76,7 @@ export default function FormDialog({ open, setOpen, createQuizQuestion }) {
       <DialogActions>
         <Button onClick={() => handleClose()}>Cancel</Button>
         <Button onClick={() => {
-          if (userInput !== "") {
-            createQuizQuestion(userInput.trim());
-          }
+          createQuizQuestion(userInput.question, userInput.correctOptions, userInput.options);
           handleClose();
         }}>Create</Button>
       </DialogActions>

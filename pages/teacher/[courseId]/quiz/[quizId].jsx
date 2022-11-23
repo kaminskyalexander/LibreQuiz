@@ -19,7 +19,7 @@ export default function Quiz() {
     setQuizzes(newQuestions);
   }
 
-  function createQuestion(name) {
+  function createQuestion(question, correctOptions, options) {
 
   }
 

@@ -36,7 +36,6 @@ export default function FormDialog({open, setOpen, createClass}) {
             }}
           />
           <TextField
-            autoFocus
             margin="dense"
             id="time"
             label="Time"
@@ -48,7 +47,6 @@ export default function FormDialog({open, setOpen, createClass}) {
             }}
           />
           <TextField
-            autoFocus
             margin="dense"
             id="description"
             label="Description"
@@ -63,14 +61,6 @@ export default function FormDialog({open, setOpen, createClass}) {
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
           <Button onClick={() => {
-            const id = ((length) => {
-              const choices = "acfghijkmnpqrstuvxyz123456789";
-              let result = ""
-              for (let i = 0; i < length; i++) {
-                result += choices[Math.floor(Math.random()*choices.length)]
-              }
-              return result;
-            })(6);
             const name = userInput.name.trim();
             const description = userInput.description.trim();
             const time = userInput.time.trim();
@@ -85,7 +75,7 @@ export default function FormDialog({open, setOpen, createClass}) {
                 default: return "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="; // blank image :)
               }
             })();
-            createClass(id, name, description, time, thumbnail)
+            createClass(name, description, time, thumbnail)
 
             handleClose();
             }}>Create</Button>

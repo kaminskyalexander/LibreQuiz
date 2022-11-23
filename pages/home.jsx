@@ -45,7 +45,17 @@ export default function Home() {
     });
   }
 
-  function createClass(id, name, description, time, thumbnail) {
+  function createClass(name, description, time, thumbnail) {
+
+    const id = ((length) => {
+      const choices = "acfghijkmnpqrstuvxyz123456789";
+      let result = ""
+      for (let i = 0; i < length; i++) {
+        result += choices[Math.floor(Math.random()*choices.length)]
+      }
+      return result;
+    })(6);
+
     setDoc(
       doc(db, "courses", id),
       {
