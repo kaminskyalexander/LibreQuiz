@@ -27,7 +27,10 @@ export default function ListTable({ title, items, handleRemove, handleClick }) {
           <TableBody>
             {items.map((item) => (
               <TableRow key={item.id} hover onClick={event => {
-                handleClick(item.id);
+                if(handleClick)
+                {
+                  handleClick(item.id);
+                }
               }}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell align="right">
