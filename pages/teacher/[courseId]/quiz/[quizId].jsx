@@ -37,7 +37,7 @@ export default function Quiz() {
   function createQuestion(question, correctOptions, options) {
     addDoc(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"),
       { question: question, options: options }).then(questionDoc => {
-        setDoc(doc(db, "courses", router.query.courseId, "answers", router.query.quizId, "questions", questionDoc.id),
+        setDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", questionDoc.id),
           { correctOptions: correctOptions });
       });
   }
