@@ -8,12 +8,21 @@ import ListTable from '../../../../components/ListTable';
 import CreateQuizQuestionDialog from '../../../../components/CreateQuizQuestionDialog';
 
 import { db } from '../../../../utils/firebase';
-import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc } from "firebase/firestore";
+import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc } from "firebase/firestore";
 
 
 export default function Quiz() {
   const router = useRouter();
   const [questions, setQuestions] = React.useState([]);
+  const [createQuestionDialogOpen, setCreateQuestionDialogOpen] = React.useState(false);
+  const [quizName, setQuizName] = React.useState();
+
+  React.useEffect(() => {
+    (async () => {
+      const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId));
+      setQuizName(quizDoc.data().name);
+    })();
+  }, []);
 
   const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"), (snapshot) => {
     (async () => {
@@ -42,12 +51,12 @@ export default function Quiz() {
       });
   }
 
-  const [createQuestionDialogOpen, setCreateQuestionDialogOpen] = React.useState(false);
+  
 
   return (<>
     <Container>
       <Stack direction="row" justifyContent="space-between" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1">Questions for #NAME</Typography>
+        <Typography variant="h3" component="h1">Questions for {quizName}</Typography>
         <Stack direction="row" spacing={4}>
           <Button
             variant="contained"
