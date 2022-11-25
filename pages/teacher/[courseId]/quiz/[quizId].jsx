@@ -33,7 +33,6 @@ function QuizEditor({ handleStartQuiz }) {
         questionsTemp.push({ id: doc.id, name: doc.data().question });
       })
       
-      console.log("Hello");
       setQuestions(questionsTemp);
     });
 
@@ -140,11 +139,28 @@ function Session() {
 // ########################################################################################################
 
 function Question() {
-  let theme = useTheme();
+  const theme = useTheme();
+  const router = useRouter();
+  const [question, setQuestion] = React.useState();
+  const [options, setOptions] = React.useState();
+
+  React.useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
+      (async () => {
+        const questionId = snapshot.data().activeQuestion;
+        const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", questionId));
+        setQuestion(questionDoc.data().question);
+        setOptions(questionDoc.data().options);
+      })();
+    });
+
+    return unsubscribe;
+  }, []);
+
   return (
     <>
       <Typography variant="h2" align="center" sx={{ m: 6 }}>
-        What does (+ 2 2) evaluate to?
+        {question}
       </Typography>
       <Grid
         container
@@ -166,7 +182,7 @@ function Question() {
               A{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-              (+ 2 2)
+              {options[0]}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -178,7 +194,7 @@ function Question() {
               C{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-            4
+            {options[2]}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -190,7 +206,7 @@ function Question() {
               B{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-            3
+            {options[1]}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -202,7 +218,7 @@ function Question() {
               D{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-            Not enough information
+              {options[3]}
             </Typography>
           </Grid>
         </Grid>
