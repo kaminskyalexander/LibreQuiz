@@ -8,10 +8,10 @@ import ListTable from '../../../../components/ListTable';
 import CreateQuizQuestionDialog from '../../../../components/CreateQuizQuestionDialog';
 
 import { db } from '../../../../utils/firebase';
-import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc } from "firebase/firestore";
+import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
 
 
-export default function Quiz() {
+function QuizEditor({ handleStartQuiz }) {
   const router = useRouter();
   const [questions, setQuestions] = React.useState([]);
   const [createQuestionDialogOpen, setCreateQuestionDialogOpen] = React.useState(false);
@@ -51,7 +51,7 @@ export default function Quiz() {
       });
   }
 
-  
+
 
   return (<>
     <Container>
@@ -59,10 +59,16 @@ export default function Quiz() {
         <Typography variant="h3" component="h1">Questions for {quizName}</Typography>
         <Stack direction="row" spacing={4}>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => { setCreateQuestionDialogOpen(true); }}
           >
             Create Question
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleStartQuiz}
+          >
+            Start Quiz
           </Button>
         </Stack>
       </Stack>
@@ -79,4 +85,29 @@ export default function Quiz() {
     />
   </>
   );
+}
+
+
+export default function Quiz() {
+  const router = useRouter();
+
+  const [quizActive, setQuizActive] = React.useState(false);
+  const [currentQuestion, setCurrentQuestion] = React.useState(null);
+
+  const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
+    setQuizActive(snapshot.data().activeQuiz === router.query.quizId);
+    setCurrentQuestion(snapshot.data().currentQuestion);
+    console.log("Recieved snapshot!")
+  });
+
+  if (quizActive) {
+
+  } else {
+    return <QuizEditor handleStartQuiz={() => {
+      updateDoc(doc(db, "courses", router.query.courseId), {
+        activeQuiz: router.query.quizId,
+        activeQuestion: null
+      });
+    }} />;
+  }
 }
