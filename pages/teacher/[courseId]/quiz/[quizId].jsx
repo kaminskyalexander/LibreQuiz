@@ -33,6 +33,7 @@ function QuizEditor({ handleStartQuiz }) {
         questionsTemp.push({ id: doc.id, name: doc.data().question });
       })
       
+      console.log("Hello");
       setQuestions(questionsTemp);
     });
 
@@ -41,7 +42,7 @@ function QuizEditor({ handleStartQuiz }) {
       setQuizName(quizDoc.data().name);
     })();
 
-    return (() => {unsubscribe();});
+    return unsubscribe;
   }, []);
 
   
@@ -100,6 +101,14 @@ function QuizEditor({ handleStartQuiz }) {
 
 function Session() {
   const router = useRouter();
+  const [quizName, setQuizName] = React.useState();
+
+  React.useEffect(() => {
+    (async () => {
+      const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId));
+      setQuizName(quizDoc.data().name);
+    })();
+  }, [])
   
   return (
     <Container maxWidth={"90%"}>
@@ -118,7 +127,7 @@ function Session() {
       </Button>
       <Stack alignItems="center" spacing={4}>
         <Typography variant="h1" align="center">
-          Sept 27th - Lists
+          {quizName}
         </Typography>
         <Button variant="contained" sx={{width: 120}}>
           Start Quiz

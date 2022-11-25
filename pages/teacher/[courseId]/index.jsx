@@ -25,7 +25,7 @@ export default function Teacher() {
       setQuizzes(quizzesTemp);
     });
 
-    return (() => {unsubscribe();});
+    return unsubscribe;
   }, []);
   
 
