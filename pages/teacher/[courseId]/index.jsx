@@ -8,7 +8,7 @@ import ListTable from '../../../components/ListTable';
 import CreateQuizDialog from '../../../components/CreateQuizDialog';
 
 import { db } from '../../../utils/firebase';
-import { onSnapshot, addDoc, collection, doc, deleteDoc } from "firebase/firestore";
+import { onSnapshot, addDoc, collection, doc, deleteDoc, query } from "firebase/firestore";
 
 export default function Teacher() {
 
@@ -16,18 +16,18 @@ export default function Teacher() {
 
   const [quizzes, setQuizzes] = React.useState([]);
 
-  const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes"), (snapshot) => {
-    (async () => {
+  React.useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes"), (snapshot) => {
       let quizzesTemp = [];
       snapshot.forEach((doc) => {
         quizzesTemp.push({ id: doc.id, name: doc.data().name });
       })
+      setQuizzes(quizzesTemp);
+    });
 
-      if (quizzesTemp.length !== quizzes.length) {
-        setQuizzes(quizzesTemp);
-      }
-    })();
-  });
+    return (() => {unsubscribe();});
+  }, []);
+  
 
   function removeQuiz(id) {
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", id));
