@@ -25,7 +25,7 @@ function QuizEditor({ handleStartQuiz }) {
         questionsTemp.push({ id: doc.id, name: doc.data().question });
       })
       
-      setQuestions(questionsTemp);s
+      setQuestions(questionsTemp);
     });
 
     (async () => {
