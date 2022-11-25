@@ -99,12 +99,20 @@ function QuizEditor({ handleStartQuiz }) {
 // ########################################################################################################
 
 function Session() {
+  const router = useRouter();
+  
   return (
     <Container maxWidth={"90%"}>
       <Button
         variant="contained"
         startIcon={<ArrowBackIcon />}
         sx={{margin: 5}}
+        onClick = {() => {
+          updateDoc((doc(db, "courses", router.query.courseId)), {
+            activeQuiz: null,
+            activeQuestion: null
+          })
+        }}
       >
         Go Back
       </Button>
