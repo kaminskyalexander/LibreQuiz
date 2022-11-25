@@ -187,7 +187,16 @@ const Content = () => {
 
 export default function Class() {
   const router = useRouter();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(() => {
+    switch (router.query.tab) {
+      case "grades":
+        return 1;
+      case "attendance":
+        return 2;
+      default:
+        return 0;
+    }
+  });
 
   return (
     <>
