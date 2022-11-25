@@ -18,24 +18,25 @@ function QuizEditor({ handleStartQuiz }) {
   const [quizName, setQuizName] = React.useState();
 
   React.useEffect(() => {
-    (async () => {
-      const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId));
-      setQuizName(quizDoc.data().name);
-    })();
-  }, []);
 
-  const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"), (snapshot) => {
-    (async () => {
+    const unsubscribe = onSnapshot(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions"), (snapshot) => {
       let questionsTemp = [];
       snapshot.forEach((doc) => {
         questionsTemp.push({ id: doc.id, name: doc.data().question });
       })
+      
+      setQuestions(questionsTemp);s
+    });
 
-      if (questionsTemp.length !== questions.length) {
-        setQuestions(questionsTemp);
-      }
+    (async () => {
+      const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId));
+      setQuizName(quizDoc.data().name);
     })();
-  });
+
+    return (() => {unsubscribe();});
+  }, []);
+
+  
 
   function removeQuestion(id) {
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", id));
@@ -97,7 +98,6 @@ export default function Quiz() {
   const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
     setQuizActive(snapshot.data().activeQuiz === router.query.quizId);
     setCurrentQuestion(snapshot.data().currentQuestion);
-    console.log("Recieved snapshot!")
   });
 
   if (quizActive) {
