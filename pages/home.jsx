@@ -90,10 +90,7 @@ export default function Home() {
         const courseData = courseSnap.data();
         coursesTemp.push({ id: courseId, ...courseData, href: "teacher/" + courseId });
       }
-
-      if (courses.length !== coursesTemp.length) {
-        setCourses(coursesTemp);
-      }
+      setCourses(coursesTemp);
     })();
   });
 
