@@ -86,8 +86,8 @@ const QuizNonActiveContent = () => {
       >
         <Alert
           severity="info"
-          icon={<InfoIcon sx={{ fontSize: 80 }} />}
-          style={{ fontSize: 40, display: 'flex', alignItems: 'center', width: '70%' }}
+          icon={<InfoIcon sx={{ fontSize: {xs: 40, sm: 80} }} />}
+          style={{ fontSize: 30, display: 'flex', alignItems: 'center', width: '70%' }}
         >
           Questions will appear here when the instructor starts polling.
         </Alert>
