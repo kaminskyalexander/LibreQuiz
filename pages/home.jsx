@@ -16,80 +16,18 @@ import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot, setDoc } f
 import { db } from '../utils/firebase';
 import { useEffect, useState } from 'react';
 
-// const courses = [
-//   {
-//     name: 'CS 135',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/cs.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'MATH 135',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/proofs.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'MATH 137',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/calc.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'PHYS 121',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/physics.jpg',
-//     href: '#',
-//   },
-//   {
-//     name: 'ECON 101',
-//     time: '10:00 AM',
-//     description: 'Section 012',
-//     thumbnail: '/img/banners/stocks.jpg',
-//     href: '#',
-//   },
-// ];
-
 export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
   const [courses, setCourses] = useState([]);
 
-
-  // const ownedCourseIds = userSnap.data().ownedCourses;
-
-  const { getUser } = useAuth();
-
-  async function updateCourses() {
-    const userDoc = doc(db, "users", getUser().uid);
-
-    const userSnap = await getDoc(userDoc);
-    const enrolledCourses = userSnap.data().enrolledCourses;
-    let coursesTemp = [];
-
-    for (const courseId of enrolledCourses) {
-      const courseDoc = doc(db, "courses", courseId);
-      const courseSnap = await getDoc(courseDoc);
-      const courseData = courseSnap.data();
-      coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
-    }
-    setCourses(coursesTemp);
-  }
-
-  useEffect(() => {
-    updateCourses();
-  }, []);
+  const { user } = useAuth();
 
   function joinClass(id) {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        // console.log(classSnap);
-        updateDoc(doc(db, "users", getUser().uid), {
+        updateDoc(doc(db, "users", user.uid), {
           enrolledCourses: arrayUnion(id)
         });
       }
@@ -100,15 +38,24 @@ export default function Home() {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        // console.log(classSnap);
-        updateDoc(doc(db, "users", getUser().uid), {
+        updateDoc(doc(db, "users", user.uid), {
           enrolledCourses: arrayRemove(id)
         });
       }
     });
   }
 
-  function createClass(id, name, description, time, thumbnail) {
+  function createClass(name, description, time, thumbnail) {
+
+    const id = ((length) => {
+      const choices = "acfghijkmnpqrstuvxyz123456789";
+      let result = ""
+      for (let i = 0; i < length; i++) {
+        result += choices[Math.floor(Math.random() * choices.length)]
+      }
+      return result;
+    })(6);
+
     setDoc(
       doc(db, "courses", id),
       {
@@ -119,30 +66,35 @@ export default function Home() {
       }
     );
 
-    updateDoc(doc(db, "users", getUser().uid), {
+    updateDoc(doc(db, "users", user.uid), {
       ownedCourses: arrayUnion(id)
     });
   }
 
-  const unsubscribe = onSnapshot(doc(db, "users", getUser().uid), (snapshot) => {
-    (async () => {
-      const enrolledCourses = snapshot.data().enrolledCourses;
-      const ownedCourses = snapshot.data().ownedCourses;
-      let coursesTemp = [];
+  React.useEffect(() => {
+    return onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+      (async () => {
+        const enrolledCourses = snapshot.data().enrolledCourses;
+        const ownedCourses = snapshot.data().ownedCourses;
+        let coursesTemp = [];
 
-      for (const courseId of enrolledCourses.concat(ownedCourses)) {
-        const courseDoc = doc(db, "courses", courseId);
-        const courseSnap = await getDoc(courseDoc)
-        const courseData = courseSnap.data();
-        coursesTemp.push({ id: courseId, ...courseData, href: "courses/" + courseId });
-      }
+        for (const courseId of enrolledCourses) {
+          const courseDoc = doc(db, "courses", courseId);
+          const courseSnap = await getDoc(courseDoc)
+          const courseData = courseSnap.data();
+          coursesTemp.push({ id: courseId, ...courseData, href: "course/" + courseId });
+        }
 
-      if (courses.length !== coursesTemp.length) {
+        for (const courseId of ownedCourses) {
+          const courseDoc = doc(db, "courses", courseId);
+          const courseSnap = await getDoc(courseDoc)
+          const courseData = courseSnap.data();
+          coursesTemp.push({ id: courseId, ...courseData, href: "teacher/" + courseId });
+        }
         setCourses(coursesTemp);
-      }
-    })();
-  });
-
+      })();
+    });
+  }, []);
 
   const [joinCourseDialogOpen, setJoinCourseDialogOpen] = React.useState(false);
   const [createCourseDialogOpen, setCreateCourseDialogOpen] = React.useState(false);

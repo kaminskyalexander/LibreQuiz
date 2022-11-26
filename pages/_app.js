@@ -1,40 +1,43 @@
 import { useRouter } from "next/router";
-import {useEffect, useState} from 'react';
+import React from 'react';
 
 import AppBar from "../components/AppBar";
 import { AuthProvider, useAuth } from "../contexts/AuthContext"
 
 import "../styles/globals.css";
 
-const AppContent = ({Component, pageProps}) => {
-  const [authenticated, setAuthenticated] = useState(false);
+const AppContent = ({ Component, pageProps }) => {
   const router = useRouter();
-  const { getUser } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  useEffect(() => {
-    if (getUser() === null && router.pathname !== "/")
-    {
+  React.useEffect(() => {
+    if (user === null && router.pathname !== "/") {
       router.push("/");
     }
-    if(getUser() !== null && router.pathname === "/")
-    {
+    if (user !== null && router.pathname === "/") {
       router.push("/home");
     }
-    setAuthenticated(true);
-  }, []);
-  
+  }, [user, isLoading]);
 
-  return <>
-    {router.pathname !== "/" && authenticated && <AppBar />}
-    <Component {...pageProps} />
-  </>;
+  const showContent = (
+    (user === null && router.pathname === "/") ||
+    (user !== null && router.pathname !== "/")
+  );
+
+  if (showContent) {
+    return <>
+      {router.pathname !== "/" && user !== null && <AppBar />}
+      <Component {...pageProps} />
+    </>;
+  }
+  return <></>;
 }
 
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps}/>
+      <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );
 }

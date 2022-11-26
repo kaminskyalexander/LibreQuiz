@@ -4,10 +4,9 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function FormDialog({open, setOpen, joinClass}) {
+export default function FormDialog({open, setOpen, createQuiz}) {
   const [userInput, setUserInput] = React.useState("");
 
   const handleClose = () => {
@@ -17,16 +16,13 @@ export default function FormDialog({open, setOpen, joinClass}) {
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Join a Course</DialogTitle>
+        <DialogTitle>Create a Quiz</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Ask your instructor for the course code, then enter it here.
-          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Course Code"
+            label="Quiz Name"
             fullWidth
             variant="standard"
             value={userInput}
@@ -39,10 +35,10 @@ export default function FormDialog({open, setOpen, joinClass}) {
           <Button onClick={() => handleClose()}>Cancel</Button>
           <Button onClick={() => {
             if(userInput !== ""){
-              joinClass(userInput.trim());
+              createQuiz(userInput.trim());
             }
             handleClose();
-            }}>Join</Button>
+            }}>Create</Button>
         </DialogActions>
     </Dialog>
   );
