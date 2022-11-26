@@ -86,8 +86,8 @@ const QuizNonActiveContent = () => {
       >
         <Alert
           severity="info"
-          icon={<InfoIcon sx={{ fontSize: 80 }} />}
-          style={{ fontSize: 40, display: 'flex', alignItems: 'center', width: '70%' }}
+          icon={<InfoIcon sx={{ fontSize: {xs: 40, sm: 80} }} />}
+          style={{ fontSize: 30, display: 'flex', alignItems: 'center', width: '70%' }}
         >
           Questions will appear here when the instructor starts polling.
         </Alert>
@@ -127,7 +127,7 @@ const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) =
   return <Container>
     <Grid container spacing={4} align="center">
       <Grid item xs={12}>
-        <Typography variant="h3" component="h1" sx={{ pt: '10vh', pb: '10vh' }}>
+        <Typography variant="h3" component="h1" sx={{ pt: 5, pb: 5 }}>
           {activeQuestion}
         </Typography>
       </Grid>

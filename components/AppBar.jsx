@@ -11,7 +11,8 @@ import Menu from '@mui/material/Menu';
 import AppDrawer from './AppDrawer';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function MenuAppBar() {
+export default function MenuAppBar(courseCode) {
+  console.log(courseCode);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { signOut } = useAuth();
@@ -40,7 +41,7 @@ export default function MenuAppBar() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              LibreQuiz
+              {courseCode.courseCode}
             </Typography>
             <IconButton
               size="large"
