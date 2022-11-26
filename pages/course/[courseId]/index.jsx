@@ -46,10 +46,10 @@ const QuizContent = () => {
       const questionId = snapshot.data().activeQuestion;
       setActiveQuizId(quizId);
       setActiveQuestionId(questionId);
-      if (quizId === null) return;
+      if (quizId === null || questionId === null) return;
       (async () => {
-        const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", quizId, "questions", questionId));
-        setActiveQuestion(quizDoc.data().question);
+        const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", quizId, "questions", questionId));
+        setActiveQuestion(questionDoc.data().question);
       })();
     });
   }, []);
@@ -108,10 +108,9 @@ const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) =
           setCurrentAns(snapshot.data().response);
         });
       }
+      setCurrentAns(null);
     })();
-
-
-  }, []);
+  }, [activeQuestionId]);
 
   function handleSelectAnswer(optionIndex) {
     setDoc(doc(db, "courses", router.query.courseId, "quizzes", activeQuizId, "submissions", activeQuestionId, "students", user.uid), {
