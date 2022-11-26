@@ -39,6 +39,7 @@ const QuizContent = () => {
   const [activeQuizId, setActiveQuizId] = React.useState(null);
   const [activeQuestionId, setActiveQuestionId] = React.useState(null);
   const [activeQuestion, setActiveQuestion] = React.useState(null);
+  const [isPolling, setIsPolling] = React.useState(false);
 
   React.useEffect(() => {
     return onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
@@ -46,6 +47,7 @@ const QuizContent = () => {
       const questionId = snapshot.data().activeQuestion;
       setActiveQuizId(quizId);
       setActiveQuestionId(questionId);
+      setIsPolling(snapshot.data().isPolling);
       if (!quizId || !questionId) return;
       (async () => {
         const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", quizId, "questions", questionId));
@@ -54,7 +56,7 @@ const QuizContent = () => {
     });
   }, [router.query.courseId]);
 
-  const quizOngoing = !!activeQuestionId;
+  const quizOngoing = !!activeQuestionId && isPolling;
 
   if (quizOngoing) {
     return <>

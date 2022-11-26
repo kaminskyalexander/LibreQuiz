@@ -124,7 +124,8 @@ function Session({ firstQuestion }) {
         onClick={() => {
           updateDoc((doc(db, "courses", router.query.courseId)), {
             activeQuiz: null,
-            activeQuestion: null
+            activeQuestion: null,
+            isPolling: false
           })
         }}
       >
@@ -140,7 +141,8 @@ function Session({ firstQuestion }) {
           onClick={() => {
             if (firstQuestion !== null) {
               updateDoc((doc(db, "courses", router.query.courseId)), {
-                activeQuestion: firstQuestion
+                activeQuestion: firstQuestion,
+                isPolling: true
               })
             }
           }}>
@@ -159,11 +161,14 @@ function Question({ questionOrder }) {
   const [question, setQuestion] = React.useState("");
   const [questionId, setQuestionId] = React.useState("");
   const [options, setOptions] = React.useState(["", "", "", ""]);
+  const [responseCount, setResponseCount] = React.useState([0, 0, 0, 0]);
+  const [isPolling, setIsPolling] = React.useState(false);
 
   React.useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
+    return onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
       (async () => {
         const snapshotQuestionId = snapshot.data().activeQuestion;
+        setIsPolling(snapshot.data().isPolling);
         if (snapshotQuestionId === null) return;
         const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", snapshotQuestionId));
         setQuestionId(snapshotQuestionId);
@@ -171,33 +176,67 @@ function Question({ questionOrder }) {
         setOptions(questionDoc.data().options);
       })();
     });
-
-    return unsubscribe;
   }, []);
+
+  React.useEffect(() => {
+    if (!questionId) return;
+    return onSnapshot(collection(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "submissions", questionId, "students"), (snapshot) => {
+      const newResponseCount = [0, 0, 0, 0];
+      snapshot.forEach((doc) => {
+        const i = doc.data().response;
+        newResponseCount[i]++;
+      })
+      console.log(newResponseCount);
+      setResponseCount(newResponseCount);
+    })
+  }, [questionId]);
 
   function handleSkip() {
     const i = questionOrder.findIndex((e) => e === questionId) + 1;
     updateDoc(doc(db, "courses", router.query.courseId),
       (i < questionOrder.length) ? {
-        activeQuestion: questionOrder[i]
+        activeQuestion: questionOrder[i],
+        isPolling: true
       } : {
         activeQuestion: null,
-        activeQuiz: null
+        activeQuiz: null,
+        isPolling: false
       });
+    setResponseCount([0, 0, 0, 0]);
   };
 
   function handlePrevious() {
-    const i = questionOrder.findIndex((e) =>  e === questionId) - 1;
+    const i = questionOrder.findIndex((e) => e === questionId) - 1;
     updateDoc(doc(db, "courses", router.query.courseId), {
-      activeQuestion: (i < 0) ? null : questionOrder[i]
+      activeQuestion: (i < 0) ? null : questionOrder[i],
+      isPolling: false
     });
+    setResponseCount([0, 0, 0, 0]);
   };
+
+  function handleGrade() {
+    updateDoc(doc(db, "courses", router.query.courseId), {
+      isPolling: false
+    });
+  }
 
   return (
     <>
       <Typography variant="h2" align="center" sx={{ m: 6 }}>
         {question}
       </Typography>
+      {!isPolling && <React.Fragment><Typography variant="h6" align="center" sx={{ m: 6 }}>
+        Number of students submitted A: {responseCount[0]}
+      </Typography>
+      <Typography variant="h6" align="center" sx={{ m: 6 }}>
+        Number of students submitted B: {responseCount[1]}
+      </Typography>
+      <Typography variant="h6" align="center" sx={{ m: 6 }}>
+        Number of students submitted C: {responseCount[2]}
+      </Typography>
+      <Typography variant="h6" align="center" sx={{ m: 6 }}>
+        Number of students submitted D: {responseCount[3]}
+      </Typography></React.Fragment>}
       <Grid
         container
         alignItems="center"
@@ -282,6 +321,7 @@ function Question({ questionOrder }) {
             label="Grade"
             style={{ color: 'white' }}
             icon={<CheckIcon style={{ color: 'white' }} />}
+            onClick={handleGrade}
           />
         </BottomNavigation>
       </Grid>
@@ -318,7 +358,8 @@ export default function Quiz() {
     return <QuizEditor handleStartQuiz={() => {
       updateDoc(doc(db, "courses", router.query.courseId), {
         activeQuiz: router.query.quizId,
-        activeQuestion: null
+        activeQuestion: null,
+        isPolling: false
       });
     }} />;
   }
