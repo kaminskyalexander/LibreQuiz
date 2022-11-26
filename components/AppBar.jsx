@@ -53,7 +53,7 @@ export default function PersistentDrawerLeft() {
   const [auth, setAuth] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const {signOutUser} = useAuth();
+  const { signOut } = useAuth();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -87,7 +87,7 @@ export default function PersistentDrawerLeft() {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button color="inherit" onClick={signOutUser}>Log Out</Button>
+            <Button color="inherit" onClick={signOut}>Log Out</Button>
             {auth && (
               <div>
                 <IconButton

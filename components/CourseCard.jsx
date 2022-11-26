@@ -33,6 +33,11 @@ export default function CourseCard({ name, time, description, thumbnail, href, o
             <IconButton
               aria-label="settings"
               onMouseDown={event => event.stopPropagation()}
+              onTouch={event => {
+                event.stopPropagation();
+                event.preventDefault();
+                handleMenu(event);
+              }}
               onClick={event => {
                 event.stopPropagation();
                 event.preventDefault();
