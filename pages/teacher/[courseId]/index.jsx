@@ -6,6 +6,7 @@ import Container from "@mui/material/Container"
 import Stack from "@mui/material/Stack"
 import ListTable from '../../../components/ListTable';
 import CreateQuizDialog from '../../../components/CreateQuizDialog';
+import CourseCodeDialog from '../../../components/CourseCodeDialog'
 
 import { db } from '../../../utils/firebase';
 import { onSnapshot, addDoc, collection, doc, deleteDoc, query } from "firebase/firestore";
@@ -37,6 +38,7 @@ export default function Teacher() {
     addDoc(collection(db, "courses", router.query.courseId, "quizzes"), { name: name, questionOrder: [] });
   }
 
+  const [showCourseCode, setShowCourseCode] = React.useState(false);
   const [createQuizDialogOpen, setCreateQuizDialogOpen] = React.useState(false);
 
   return (<>
@@ -44,6 +46,11 @@ export default function Teacher() {
       <Stack direction="row" justifyContent="space-between" sx={{ py: 4 }}>
         <Typography variant="h3" component="h1">My Quizzes</Typography>
         <Stack direction="row" spacing={4}>
+          <Button 
+            variant="outlined" 
+            onClick={() => { setShowCourseCode(true); }}>
+            Course Code
+          </Button>
           <Button
             variant="contained"
             onClick={() => { setCreateQuizDialogOpen(true); }}
@@ -63,6 +70,10 @@ export default function Teacher() {
       open={createQuizDialogOpen}
       setOpen={setCreateQuizDialogOpen}
       createQuiz={createQuiz}
+    />
+    <CourseCodeDialog
+      open={showCourseCode}
+      setOpen={setShowCourseCode}
     />
   </>
   );

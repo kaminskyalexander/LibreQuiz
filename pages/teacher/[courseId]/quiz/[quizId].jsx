@@ -13,6 +13,7 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import PersonIcon from '@mui/icons-material/Person';
 
 import { db } from '../../../../utils/firebase';
 import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
@@ -241,8 +242,8 @@ function Question({ questionOrder }) {
         <Typography variant="h6" align="center" color={correctOptions[3] ? "green" : "red"}>
           Number of students submitted D: {responseCount[3]}
         </Typography>
-      </React.Fragment> || <Typography variant="h6" align="center" color="primary">
-        Number of students submitted: {responseCount.reduce((a, b) => a + b, 0)}
+      </React.Fragment> || <Typography variant="h6" align="right" color="primary" sx={{pr: 10, fontSize: 30}}>
+        <PersonIcon/> {responseCount.reduce((a, b) => a + b, 0)}
       </Typography>}
       <Grid
         container
