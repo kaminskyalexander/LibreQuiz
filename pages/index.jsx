@@ -21,11 +21,12 @@ export default function Home() {
       </header>
       <main className={`${styles.main} container`}>
         <div>
-          <h1 className={styles.title}>Lorem ipsum dolor sit amet</h1>
+          <h1 className={styles.title}>
+            Increase student engagement and focus.
+          </h1>
           <p className={styles.paragraph}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            vehicula ipsum tempor pulvinar suscipit. In hac habitasse platea
-            dictumst. Quisque convallis commodo felis eget hendrerit.
+            Set up your class in minutes and start creating quizzes to boost
+            student participation using LibreQuiz.
           </p>
           <Button variant="contained">Get Started</Button>
         </div>
