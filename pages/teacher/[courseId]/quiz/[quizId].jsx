@@ -177,7 +177,6 @@ function Question({ questionOrder }) {
 
   function handleSkip() {
     const i = questionOrder.findIndex((e) => e === questionId) + 1;
-    console.log("Skip", i, questionOrder, questionId)
     updateDoc(doc(db, "courses", router.query.courseId),
       (i < questionOrder.length) ? {
         activeQuestion: questionOrder[i]
@@ -188,7 +187,6 @@ function Question({ questionOrder }) {
   };
 
   function handlePrevious() {
-    console.log("Helllo");
     const i = questionOrder.findIndex((e) =>  e === questionId) - 1;
     updateDoc(doc(db, "courses", router.query.courseId), {
       activeQuestion: (i < 0) ? null : questionOrder[i]
@@ -312,7 +310,6 @@ export default function Quiz() {
     return unsubscribe;
   }, []);
 
-  console.log(questionOrder);
   if (quizActive && currentQuestion !== null) {
     return <Question questionOrder={questionOrder} />;
   } else if (quizActive) {
