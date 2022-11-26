@@ -51,7 +51,7 @@ export default function Home() {
       const choices = "acfghijkmnpqrstuvxyz123456789";
       let result = ""
       for (let i = 0; i < length; i++) {
-        result += choices[Math.floor(Math.random()*choices.length)]
+        result += choices[Math.floor(Math.random() * choices.length)]
       }
       return result;
     })(6);
@@ -71,29 +71,30 @@ export default function Home() {
     });
   }
 
-  const unsubscribe = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
-    (async () => {
-      const enrolledCourses = snapshot.data().enrolledCourses;
-      const ownedCourses = snapshot.data().ownedCourses;
-      let coursesTemp = [];
+  React.useEffect(() => {
+    return onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+      (async () => {
+        const enrolledCourses = snapshot.data().enrolledCourses;
+        const ownedCourses = snapshot.data().ownedCourses;
+        let coursesTemp = [];
 
-      for (const courseId of enrolledCourses) {
-        const courseDoc = doc(db, "courses", courseId);
-        const courseSnap = await getDoc(courseDoc)
-        const courseData = courseSnap.data();
-        coursesTemp.push({ id: courseId, ...courseData, href: "course/" + courseId });
-      }
+        for (const courseId of enrolledCourses) {
+          const courseDoc = doc(db, "courses", courseId);
+          const courseSnap = await getDoc(courseDoc)
+          const courseData = courseSnap.data();
+          coursesTemp.push({ id: courseId, ...courseData, href: "course/" + courseId });
+        }
 
-      for (const courseId of ownedCourses) {
-        const courseDoc = doc(db, "courses", courseId);
-        const courseSnap = await getDoc(courseDoc)
-        const courseData = courseSnap.data();
-        coursesTemp.push({ id: courseId, ...courseData, href: "teacher/" + courseId });
-      }
-      setCourses(coursesTemp);
-    })();
-  });
-
+        for (const courseId of ownedCourses) {
+          const courseDoc = doc(db, "courses", courseId);
+          const courseSnap = await getDoc(courseDoc)
+          const courseData = courseSnap.data();
+          coursesTemp.push({ id: courseId, ...courseData, href: "teacher/" + courseId });
+        }
+        setCourses(coursesTemp);
+      })();
+    });
+  }, []);
 
   const [joinCourseDialogOpen, setJoinCourseDialogOpen] = React.useState(false);
   const [createCourseDialogOpen, setCreateCourseDialogOpen] = React.useState(false);
