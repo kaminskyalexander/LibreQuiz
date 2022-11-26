@@ -46,7 +46,6 @@ const QuizContent = () => {
       const questionId = snapshot.data().activeQuestion;
       setActiveQuizId(quizId);
       setActiveQuestionId(questionId);
-      console.log(quizId, questionId)
       if (!quizId || !questionId) return;
       (async () => {
         const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", quizId, "questions", questionId));
@@ -98,6 +97,7 @@ const QuizNonActiveContent = () => {
 const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) => {
   const router = useRouter();
   const [currentAns, setCurrentAns] = React.useState(null);
+  const [hasAnswered, setHasAnswered] = React.useState(false);
   const { user } = useAuth();
 
   React.useEffect(() => {
@@ -113,12 +113,13 @@ const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) =
       }
       setCurrentAns(null);
     })();
-  }, [activeQuestionId]);
+  }, [activeQuestionId, hasAnswered]);
 
   function handleSelectAnswer(optionIndex) {
     setDoc(doc(db, "courses", router.query.courseId, "quizzes", activeQuizId, "submissions", activeQuestionId, "students", user.uid), {
       response: optionIndex
     });
+    setHasAnswered(true);
   };
 
   return <Container>
