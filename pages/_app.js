@@ -53,8 +53,6 @@ const AppContent = ({ Component, pageProps }) => {
   if (showContent) {
     return <ThemeProvider theme={theme}>
       {(() => {
-        console.log("User", user);
-        console.log("Path", router.pathname);
         if (router.pathname !== "/home" && user !== null) {
           return <AppBar courseCode={currentCourse} />;
         }

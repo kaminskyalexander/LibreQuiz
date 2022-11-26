@@ -191,7 +191,6 @@ function Question({ questionOrder }) {
         const i = doc.data().response;
         newResponseCount[i]++;
       })
-      console.log(newResponseCount);
       setResponseCount(newResponseCount);
     })
   }, [questionId]);

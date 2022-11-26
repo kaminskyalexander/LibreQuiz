@@ -12,7 +12,6 @@ import AppDrawer from './AppDrawer';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function MenuAppBar(courseCode) {
-  console.log(courseCode);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { signOut } = useAuth();
