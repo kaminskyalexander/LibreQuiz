@@ -38,7 +38,7 @@ export default function FormDialog({ open, setOpen, createQuizQuestion }) {
           Check the correct answers.
         </DialogContentText>
         {["A", "B", "C", "D"].map((q, i) => (
-          <Stack direction="row" alignItems="flex-end">
+          <Stack direction="row" alignItems="flex-end" key={$`checkbox-${i}`}>
             <Checkbox
               checked={userInput.correctOptions[i]}
               onChange={(e) => {
