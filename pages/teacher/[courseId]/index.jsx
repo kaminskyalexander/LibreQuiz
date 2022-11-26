@@ -34,7 +34,7 @@ export default function Teacher() {
   }
 
   function createQuiz(name) {
-    addDoc(collection(db, "courses", router.query.courseId, "quizzes"), { name: name });
+    addDoc(collection(db, "courses", router.query.courseId, "quizzes"), { name: name, questionOrder: [] });
   }
 
   const [createQuizDialogOpen, setCreateQuizDialogOpen] = React.useState(false);

@@ -16,7 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 import { db } from '../../../../utils/firebase';
-import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
+import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 
 function QuizEditor({ handleStartQuiz }) {
@@ -50,6 +50,9 @@ function QuizEditor({ handleStartQuiz }) {
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", id));
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", id));
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "submission", id));
+    updateDoc(doc(db, "courses", router.query.courseId), {
+      questionOrder: arrayRemove(id)
+    })
   }
 
   function createQuestion(question, correctOptions, options) {
@@ -57,7 +60,11 @@ function QuizEditor({ handleStartQuiz }) {
       { question: question, options: options }).then(questionDoc => {
         setDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", questionDoc.id),
           { correctOptions: correctOptions });
+        updateDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId), {
+          questionOrder: arrayUnion(questionDoc.id)
+        });
       });
+    
   }
 
 
@@ -98,7 +105,7 @@ function QuizEditor({ handleStartQuiz }) {
 
 // ########################################################################################################
 
-function Session() {
+function Session({firstQuestion}) {
   const router = useRouter();
   const [quizName, setQuizName] = React.useState();
 
@@ -128,7 +135,17 @@ function Session() {
         <Typography variant="h1" align="center">
           {quizName}
         </Typography>
-        <Button variant="contained" sx={{width: 120}}>
+        <Button 
+          variant="contained" 
+          sx={{width: 120}}
+          onClick={() => {
+            if(firstQuestion !== null)
+            {
+              updateDoc((doc(db, "courses", router.query.courseId)), {
+                activeQuestion: firstQuestion
+              })
+            }
+          }}>
           Start Quiz
         </Button>
       </Stack>
@@ -141,8 +158,8 @@ function Session() {
 function Question() {
   const theme = useTheme();
   const router = useRouter();
-  const [question, setQuestion] = React.useState();
-  const [options, setOptions] = React.useState();
+  const [question, setQuestion] = React.useState("");
+  const [options, setOptions] = React.useState(["", "", "", ""]);
 
   React.useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
@@ -166,12 +183,12 @@ function Question() {
         container
         alignItems="center"
         justifyContent="center"
-        style={{ minWidth: '100vw' }}
+        style={{ minWidth: '100%' }}
       >
         <Grid
           container
           spacing={"15vh"}
-          style={{ maxWidth: '90vw'}}
+          style={{ maxWidth: '90%'}}
         >
           <Grid item xs={6}>
             <Typography
@@ -258,16 +275,25 @@ export default function Quiz() {
 
   const [quizActive, setQuizActive] = React.useState(false);
   const [currentQuestion, setCurrentQuestion] = React.useState(null);
+  const [questionOrder, setQuestionOrder] = React.useState([]);
 
-  const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
-    setQuizActive(snapshot.data().activeQuiz === router.query.quizId);
-    setCurrentQuestion(snapshot.data().activeQuestion);
-  });
+  React.useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
+      setQuizActive(snapshot.data().activeQuiz === router.query.quizId);
+      setCurrentQuestion(snapshot.data().activeQuestion);
+      (async () => {
+        const quizDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId));
+        setQuestionOrder(quizDoc.data().questionOrder);
+      })();
+    });
+    return unsubscribe;
+  }, []);
 
+  console.log(questionOrder);
   if (quizActive && currentQuestion !== null) {
     return <Question/>
   } else if(quizActive) {
-    return <Session/>
+    return <Session firstQuestion={(questionOrder.length > 0 ? questionOrder[0] : null)}/>
   } else {
     return <QuizEditor handleStartQuiz={() => {
       updateDoc(doc(db, "courses", router.query.courseId), {
