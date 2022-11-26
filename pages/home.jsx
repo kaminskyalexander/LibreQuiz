@@ -82,14 +82,18 @@ export default function Home() {
           const courseDoc = doc(db, "courses", courseId);
           const courseSnap = await getDoc(courseDoc)
           const courseData = courseSnap.data();
-          coursesTemp.push({ id: courseId, ...courseData, href: "course/" + courseId });
+          const courseThumbnail = courseData.thumbnail;
+          const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail ;
+          coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "course/" + courseId });
         }
 
         for (const courseId of ownedCourses) {
           const courseDoc = doc(db, "courses", courseId);
           const courseSnap = await getDoc(courseDoc)
           const courseData = courseSnap.data();
-          coursesTemp.push({ id: courseId, ...courseData, href: "teacher/" + courseId });
+          const courseThumbnail = courseData.thumbnail;
+          const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail;
+          coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "teacher/" + courseId });
         }
         setCourses(coursesTemp);
       })();

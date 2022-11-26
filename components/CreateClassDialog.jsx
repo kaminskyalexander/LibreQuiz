@@ -67,11 +67,11 @@ export default function FormDialog({open, setOpen, createClass}) {
             const thumbnail = (() => {
               switch (name)
               {
-                case "CS 135":   return "/img/banners/cs.jpg";
-                case "PHYS 121": return "/img/banners/physics.jpg"; 
-                case "ECON 101": return "/img/banners/stocks.jpg"; 
-                case "MATH 135": return "/img/banners/proofs.jpg";
-                case "MATH 137": return "/img/banners/calc.jpg";
+                case "CS 135":   return "cs.jpg";
+                case "PHYS 121": return "physics.jpg"; 
+                case "ECON 101": return "stocks.jpg"; 
+                case "MATH 135": return "proofs.jpg";
+                case "MATH 137": return "calc.jpg";
                 default: return "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="; // blank image :)
               }
             })();
