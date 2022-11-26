@@ -14,6 +14,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PersonIcon from '@mui/icons-material/Person';
+import BarGraph from '../../../../components/BarGraph';
 
 import { db } from '../../../../utils/firebase';
 import { onSnapshot, setDoc, addDoc, collection, doc, deleteDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
@@ -163,7 +164,7 @@ function Question({ questionOrder }) {
   const [questionId, setQuestionId] = React.useState("");
   const [options, setOptions] = React.useState(["", "", "", ""]);
   const [responseCount, setResponseCount] = React.useState([0, 0, 0, 0]);
-  const [isPolling, setIsPolling] = React.useState(false);
+  const [isPolling, setIsPolling] = React.useState(true);
   const [correctOptions, setCorrectOptions] = React.useState([false, false, false, false]);
 
   React.useEffect(() => {
@@ -224,32 +225,25 @@ function Question({ questionOrder }) {
     });
   }
 
-  return (
-    <>
+  const numSubmitted = responseCount.reduce((a, b) => a + b, 0);
+  const pctSubmitted = [
+    (responseCount[0] / numSubmitted) * 100,
+    (responseCount[1] / numSubmitted) * 100,
+    (responseCount[2] / numSubmitted) * 100,
+    (responseCount[3] / numSubmitted) * 100
+  ];
+
+  return (<React.Fragment>
+    <Container>
       <Typography variant="h2" align="center" sx={{ m: 6 }}>
         {question}
       </Typography>
-      {!isPolling && <React.Fragment>
-        <Typography variant="h6" align="center" color={correctOptions[0] ? "green" : "red"}>
-          Number of students submitted A: {responseCount[0]}
-        </Typography>
-        <Typography variant="h6" align="center" color={correctOptions[1] ? "green" : "red"}>
-          Number of students submitted B: {responseCount[1]}
-        </Typography>
-        <Typography variant="h6" align="center" color={correctOptions[2] ? "green" : "red"}>
-          Number of students submitted C: {responseCount[2]}
-        </Typography>
-        <Typography variant="h6" align="center" color={correctOptions[3] ? "green" : "red"}>
-          Number of students submitted D: {responseCount[3]}
-        </Typography>
-      </React.Fragment> || <Typography variant="h6" align="right" color="primary" sx={{pr: 10, fontSize: 30}}>
-        <PersonIcon/> {responseCount.reduce((a, b) => a + b, 0)}
-      </Typography>}
       <Grid
         container
         alignItems="center"
         justifyContent="center"
-        style={{ minWidth: '100%' }}
+        width={1}
+        sx={{pb: 10}}
       >
         <Grid
           container
@@ -306,34 +300,48 @@ function Question({ questionOrder }) {
           </Grid>
         </Grid>
       </Grid>
-
-      <Grid justifyContent="center" align-items="center" position="absolute" top="85%" container>
-        <BottomNavigation
-          showLabels
-          sx={{ width: '50vw' }}
-          style={{ backgroundColor: theme.palette.primary.main }}
-        >
-          <BottomNavigationAction
-            label="Previous"
-            style={{ color: 'white' }}
-            icon={<ArrowBackIcon style={{ color: 'white' }} />}
-            onClick={handlePrevious}
-          />
-          <BottomNavigationAction
-            label="Skip"
-            style={{ color: 'white' }}
-            icon={<SkipNextIcon style={{ color: 'white' }} />}
-            onClick={handleSkip}
-          />
-          <BottomNavigationAction
-            label="Grade"
-            style={{ color: 'white' }}
-            icon={<CheckIcon style={{ color: 'white' }} />}
-            onClick={handleGrade}
-          />
-        </BottomNavigation>
-      </Grid>
-    </>
+      {!isPolling &&
+        <BarGraph
+          data={[
+            { label: "A", value: pctSubmitted[0], color: correctOptions[0] ? "success" : "error" },
+            { label: "B", value: pctSubmitted[1], color: correctOptions[1] ? "success" : "error" },
+            { label: "C", value: pctSubmitted[2], color: correctOptions[2] ? "success" : "error" },
+            { label: "D", value: pctSubmitted[3], color: correctOptions[3] ? "success" : "error" }
+          ]}
+          labelVariant="h3"
+          height={200}
+          showValues
+        /> || <Typography variant="h6" align="center" color="primary">
+          <PersonIcon/> {numSubmitted} submitted
+        </Typography>}
+    </Container>
+    <Grid justifyContent="center" align-items="center" position="absolute" top="85%" container>
+      <BottomNavigation
+        showLabels
+        sx={{ width: '50vw' }}
+        style={{ backgroundColor: theme.palette.primary.main }}
+      >
+        <BottomNavigationAction
+          label="Previous"
+          style={{ color: 'white' }}
+          icon={<ArrowBackIcon style={{ color: 'white' }} />}
+          onClick={handlePrevious}
+        />
+        <BottomNavigationAction
+          label="Skip"
+          style={{ color: 'white' }}
+          icon={<SkipNextIcon style={{ color: 'white' }} />}
+          onClick={handleSkip}
+        />
+        <BottomNavigationAction
+          label="Grade"
+          style={{ color: 'white' }}
+          icon={<CheckIcon style={{ color: 'white' }} />}
+          onClick={handleGrade}
+        />
+      </BottomNavigation>
+    </Grid>
+  </React.Fragment>
   );
 }
 

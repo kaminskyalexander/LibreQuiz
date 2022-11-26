@@ -14,8 +14,8 @@ const Bar = styled(LinearProgress)(({ theme, value }) => ({
   }
 }));
 
-export default function BarGraph({ data, labelVariant, showValues}) {
-  return (<Grid container height={500} columnSpacing={10} alignItems="stretch">
+export default function BarGraph({ data, labelVariant, showValues, height}) {
+  return (<Grid container height={height} columnSpacing={10} alignItems="stretch">
     {data.map(({ label, value, color }, index) => {
       return <Grid
         item
@@ -23,9 +23,9 @@ export default function BarGraph({ data, labelVariant, showValues}) {
         key={`bar-${index}`}
         style={{ display: "flex", flexDirection: "column" }}
       >
-        <Bar variant="determinate" value={value} color={color} />
+        <Bar variant="determinate" value={value ? value : 0} color={color} />
         <Typography variant={labelVariant} align="center">{label}</Typography>
-        {showValues && <Typography align="center">{value}%</Typography>}
+        {showValues && <Typography align="center">{value ? value : 0}%</Typography>}
       </Grid>;
     })}
   </Grid>);
