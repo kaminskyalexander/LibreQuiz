@@ -163,6 +163,7 @@ function Question({ questionOrder }) {
   const [options, setOptions] = React.useState(["", "", "", ""]);
   const [responseCount, setResponseCount] = React.useState([0, 0, 0, 0]);
   const [isPolling, setIsPolling] = React.useState(false);
+  const [correctOptions, setCorrectOptions] = React.useState([false, false, false, false]);
 
   React.useEffect(() => {
     return onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
@@ -174,6 +175,8 @@ function Question({ questionOrder }) {
         setQuestionId(snapshotQuestionId);
         setQuestion(questionDoc.data().question);
         setOptions(questionDoc.data().options);
+        const answerDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", snapshotQuestionId));
+        setCorrectOptions(answerDoc.data().correctOptions);
       })();
     });
   }, []);
@@ -225,18 +228,22 @@ function Question({ questionOrder }) {
       <Typography variant="h2" align="center" sx={{ m: 6 }}>
         {question}
       </Typography>
-      {!isPolling && <React.Fragment><Typography variant="h6" align="center" sx={{ m: 6 }}>
-        Number of students submitted A: {responseCount[0]}
-      </Typography>
-      <Typography variant="h6" align="center" sx={{ m: 6 }}>
-        Number of students submitted B: {responseCount[1]}
-      </Typography>
-      <Typography variant="h6" align="center" sx={{ m: 6 }}>
-        Number of students submitted C: {responseCount[2]}
-      </Typography>
-      <Typography variant="h6" align="center" sx={{ m: 6 }}>
-        Number of students submitted D: {responseCount[3]}
-      </Typography></React.Fragment>}
+      {!isPolling && <React.Fragment>
+        <Typography variant="h6" align="center" color={correctOptions[0] ? "green" : "red"}>
+          Number of students submitted A: {responseCount[0]}
+        </Typography>
+        <Typography variant="h6" align="center" color={correctOptions[1] ? "green" : "red"}>
+          Number of students submitted B: {responseCount[1]}
+        </Typography>
+        <Typography variant="h6" align="center" color={correctOptions[2] ? "green" : "red"}>
+          Number of students submitted C: {responseCount[2]}
+        </Typography>
+        <Typography variant="h6" align="center" color={correctOptions[3] ? "green" : "red"}>
+          Number of students submitted D: {responseCount[3]}
+        </Typography>
+      </React.Fragment> || <Typography variant="h6" align="center" color="primary">
+        Number of students submitted: {responseCount.reduce((a, b) => a + b, 0)}
+      </Typography>}
       <Grid
         container
         alignItems="center"
