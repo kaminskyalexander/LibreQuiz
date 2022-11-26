@@ -23,25 +23,27 @@ export default function AppDrawer({ open, setOpen }) {
   React.useEffect(() => {
     return onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       (async () => {
-        const enrolledCourses = snapshot.data().enrolledCourses;
-        const ownedCourses = snapshot.data().ownedCourses;
-        let coursesTemp = [];
+        if (snapshot.exists()) {
+          const enrolledCourses = snapshot.data().enrolledCourses;
+          const ownedCourses = snapshot.data().ownedCourses;
+          let coursesTemp = [];
 
-        for (const courseId of enrolledCourses) {
-          const courseDoc = doc(db, "courses", courseId);
-          const courseSnap = await getDoc(courseDoc)
-          const courseData = courseSnap.data();
-          coursesTemp.push({ id: courseId, ...courseData, href: "/course/" + courseId });
+          for (const courseId of enrolledCourses) {
+            const courseDoc = doc(db, "courses", courseId);
+            const courseSnap = await getDoc(courseDoc)
+            const courseData = courseSnap.data();
+            coursesTemp.push({ id: courseId, ...courseData, href: "/course/" + courseId });
+          }
+
+          for (const courseId of ownedCourses) {
+            const courseDoc = doc(db, "courses", courseId);
+            const courseSnap = await getDoc(courseDoc)
+            const courseData = courseSnap.data();
+            coursesTemp.push({ id: courseId, ...courseData, href: "/teacher/" + courseId });
+          }
+
+          setCourses(coursesTemp);
         }
-
-        for (const courseId of ownedCourses) {
-          const courseDoc = doc(db, "courses", courseId);
-          const courseSnap = await getDoc(courseDoc)
-          const courseData = courseSnap.data();
-          coursesTemp.push({ id: courseId, ...courseData, href: "/teacher/" + courseId });
-        }
-
-        setCourses(coursesTemp);
       })();
     });
   }, []);
@@ -70,10 +72,10 @@ export default function AppDrawer({ open, setOpen }) {
         </List>
         <Divider />
         <List>
-          {courses.map(({id, name, href}, index) => (
+          {courses.map(({ id, name, href }, index) => (
             <ListItem key={id} disablePadding>
               <ListItemButton onClick={() => router.push(href)}>
-                <ListItemIcon/>
+                <ListItemIcon />
                 <ListItemText primary={name} />
               </ListItemButton>
             </ListItem>

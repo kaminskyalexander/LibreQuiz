@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
 
 import { auth, provider, db} from '../utils/firebase';
-import { signInWithRedirect, signOut, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
 import {setDoc, doc, addDoc, arrayUnion, updateDoc, getDoc} from 'firebase/firestore';
 
 const AuthContext = createContext();
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     const router = useRouter();
   
     function signIn() {
-        signInWithRedirect(auth, provider).then((result) => {
+        signInWithPopup(auth, provider).then((result) => {
           getDoc(doc(db, "users", result.user.uid)).then((knownUsers) => {
             if(knownUsers.exists()){
               updateDoc(doc(db, "users", result.user.uid), {

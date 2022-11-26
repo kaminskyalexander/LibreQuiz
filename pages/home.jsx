@@ -74,28 +74,30 @@ export default function Home() {
   React.useEffect(() => {
     return onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       (async () => {
-        const enrolledCourses = snapshot.data().enrolledCourses;
-        const ownedCourses = snapshot.data().ownedCourses;
-        let coursesTemp = [];
+        if (snapshot.exists()) {
+          const enrolledCourses = snapshot.data().enrolledCourses;
+          const ownedCourses = snapshot.data().ownedCourses;
+          let coursesTemp = [];
 
-        for (const courseId of enrolledCourses) {
-          const courseDoc = doc(db, "courses", courseId);
-          const courseSnap = await getDoc(courseDoc)
-          const courseData = courseSnap.data();
-          const courseThumbnail = courseData.thumbnail;
-          const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail ;
-          coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "course/" + courseId });
-        }
+          for (const courseId of enrolledCourses) {
+            const courseDoc = doc(db, "courses", courseId);
+            const courseSnap = await getDoc(courseDoc)
+            const courseData = courseSnap.data();
+            const courseThumbnail = courseData.thumbnail;
+            const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail;
+            coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "course/" + courseId });
+          }
 
-        for (const courseId of ownedCourses) {
-          const courseDoc = doc(db, "courses", courseId);
-          const courseSnap = await getDoc(courseDoc)
-          const courseData = courseSnap.data();
-          const courseThumbnail = courseData.thumbnail;
-          const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail;
-          coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "teacher/" + courseId });
+          for (const courseId of ownedCourses) {
+            const courseDoc = doc(db, "courses", courseId);
+            const courseSnap = await getDoc(courseDoc)
+            const courseData = courseSnap.data();
+            const courseThumbnail = courseData.thumbnail;
+            const courseThumbnailFinal = courseThumbnail.startsWith("data:") ? courseThumbnail : "./img/banners/" + courseThumbnail;
+            coursesTemp.push({ id: courseId, ...courseData, thumbnail: courseThumbnailFinal, href: "teacher/" + courseId });
+          }
+          setCourses(coursesTemp);
         }
-        setCourses(coursesTemp);
       })();
     });
   }, []);
