@@ -52,7 +52,7 @@ const QuizContent = () => {
         setActiveQuestion(questionDoc.data().question);
       })();
     });
-  }, []);
+  }, [router.query.courseId]);
 
   const quizOngoing = !!activeQuestionId;
 
