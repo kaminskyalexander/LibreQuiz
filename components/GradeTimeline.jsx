@@ -45,7 +45,6 @@ export default function GradeTimeline() {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
-          <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent>Missed Class</TimelineContent>
       </TimelineItem>

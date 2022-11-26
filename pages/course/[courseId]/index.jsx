@@ -22,16 +22,15 @@ import { db } from '../../../utils/firebase';
 import { onSnapshot, doc, setDoc, getDoc } from "firebase/firestore";
 
 const attendanceData = {
-  "2022-10-04": { attended: true },
-  "2022-10-06": { attended: false },
-  "2022-10-11": { attended: true },
-  "2022-10-13": { attended: true },
-  "2022-10-18": { attended: true },
-  "2022-10-20": { attended: true },
-  "2022-10-25": { attended: false },
   "2022-10-27": { attended: true },
   "2022-11-01": { attended: true },
-  "2022-11-03": { attended: false }
+  "2022-11-03": { attended: true },
+  "2022-11-08": { attended: true },
+  "2022-11-10": { attended: false },
+  "2022-11-15": { attended: false },
+  "2022-11-17": { attended: true },
+  "2022-11-22": { attended: true },
+  "2022-11-24": { attended: false }
 }
 
 const QuizContent = () => {
@@ -178,20 +177,20 @@ const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) =
 
 const AttendanceContent = () => {
   return <Container>
-    <Grid container spacing={4} sx={{ pt: 2, pb: 2, mb: 10 }}>
+    <Grid container spacing={4} sx={{ pt: 2, pb: 15}}>
       <Grid item xs={12}>
         <Typography variant="h3" component="h1" sx={{ pt: 2, pb: 2 }}>
           Attendance
         </Typography>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Paper elevation={3} align="center" sx={{ height: "100%" }} >
-          <AttendanceCalendar attendanceData={attendanceData} />
+        <Paper elevation={3} align="center" sx={{ pt: 10, pb: 10 }} >
+          <CircularPercentProgress size={250} value={80} fontSize={50} />
         </Paper>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Paper elevation={3} align="center" sx={{ pt: 2, pb: 2, height: "100%" }} >
-          <CircularPercentProgress size={300} value={80} fontSize={50} />
+        <Paper elevation={3} align="center" justifyContent="center" sx={{ }} >
+          <AttendanceCalendar attendanceData={attendanceData} />
         </Paper>
       </Grid>
     </Grid>
@@ -200,19 +199,19 @@ const AttendanceContent = () => {
 
 const GradesContent = () => {
   return <Container>
-    <Grid container spacing={4} sx={{ pt: 2, pb: 2, mb: 10 }}>
+    <Grid container spacing={4} sx={{ pt: 2, pb: 15}}>
       <Grid item xs={12}>
         <Typography variant="h3" component="h1" sx={{ pt: 2, pb: 2 }}>
           Grades
         </Typography>
       </Grid>
-      <Grid item xs={12} md={6} align="center">
-        <Paper elevation={3} align="center" sx={{ p: 2, height: "100%" }} >
-          <CircularPercentProgress size={300} value={80} fontSize={50} />
+      <Grid item xs={12} md={6}>
+        <Paper elevation={3} align="center" sx={{ pt: 10, pb: 10 }} >
+          <CircularPercentProgress size={250} value={90} fontSize={50} />
         </Paper>
       </Grid>
       <Grid item xs={12} md={6} align="center">
-        <Paper elevation={3} align="center" sx={{ p: 2, height: "100%" }} >
+        <Paper elevation={3} align="center" sx={{ p: 2 }} >
           <GradeTimeline />
         </Paper>
       </Grid>
