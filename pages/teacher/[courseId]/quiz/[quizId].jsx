@@ -11,7 +11,6 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
@@ -272,7 +271,7 @@ function Question({ questionOrder }) {
           <BottomNavigationAction
             label="Previous"
             style={{ color: 'white' }}
-            icon={<ArrowBackIosIcon style={{ color: 'white' }} />}
+            icon={<ArrowBackIcon style={{ color: 'white' }} />}
             onClick={handlePrevious}
           />
           <BottomNavigationAction
