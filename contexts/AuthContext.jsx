@@ -12,8 +12,8 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setCurrentUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
   
     function signIn() {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
         })
     }
 
-    function signOutUser()
+    function signOutInternal()
     {
       signOut(auth);
       router.push("/");
@@ -59,21 +59,22 @@ export function AuthProvider({ children }) {
     useEffect(() => {
       const unsubscribe = auth.onAuthStateChanged(user => {
         setCurrentUser(user);
-        setLoading(false);
+        setIsLoading(false);
       })
   
       return unsubscribe
     }, [])
   
     const value = {
-      getUser,
+      user,
+      isLoading,
       signIn,
-      signOutUser
+      signOut: signOutInternal
     }
   
     return (
       <AuthContext.Provider value={value}>
-        { !loading && children }
+        { !isLoading && children }
       </AuthContext.Provider>
     )
   }

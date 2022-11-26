@@ -21,13 +21,13 @@ export default function Home() {
   const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
   const [courses, setCourses] = useState([]);
 
-  const { getUser } = useAuth();
+  const { user } = useAuth();
 
   function joinClass(id) {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        updateDoc(doc(db, "users", getUser().uid), {
+        updateDoc(doc(db, "users", user.uid), {
           enrolledCourses: arrayUnion(id)
         });
       }
@@ -38,7 +38,7 @@ export default function Home() {
     getDoc(doc(db, "courses", id)).then((classSnap) => {
 
       if (classSnap.exists()) {
-        updateDoc(doc(db, "users", getUser().uid), {
+        updateDoc(doc(db, "users", user.uid), {
           enrolledCourses: arrayRemove(id)
         });
       }
@@ -66,12 +66,12 @@ export default function Home() {
       }
     );
 
-    updateDoc(doc(db, "users", getUser().uid), {
+    updateDoc(doc(db, "users", user.uid), {
       ownedCourses: arrayUnion(id)
     });
   }
 
-  const unsubscribe = onSnapshot(doc(db, "users", getUser().uid), (snapshot) => {
+  const unsubscribe = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
     (async () => {
       const enrolledCourses = snapshot.data().enrolledCourses;
       const ownedCourses = snapshot.data().ownedCourses;
