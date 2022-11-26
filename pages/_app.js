@@ -8,6 +8,9 @@ import { db } from '../utils/firebase';
 import { onSnapshot, addDoc, collection, doc, deleteDoc, query, getDoc } from "firebase/firestore";
 
 import "../styles/globals.css";
+import { ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material";
+import { pink } from '@mui/material/colors';
 
 const AppContent = ({ Component, pageProps }) => {
   const router = useRouter();
@@ -28,12 +31,18 @@ const AppContent = ({ Component, pageProps }) => {
     (user !== null && router.pathname !== "/")
   );
 
-  
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: pink[300],
+      }
+    },
+  });
+
 
   React.useEffect(() => {
     (async () => {
-      if(router.query.courseId)
-      {
+      if (router.query.courseId) {
         const courseDoc = await getDoc(doc(db, "courses", router.query.courseId));
         setCurrentCourse(courseDoc.data().name);
       }
@@ -42,20 +51,20 @@ const AppContent = ({ Component, pageProps }) => {
   }, [router.query.courseId]);
 
   if (showContent) {
-    return <>
-    {(() => {
-      console.log("User", user);
-      console.log("Path", router.pathname);
-      if (router.pathname !== "/home" && user !== null) {
-        return <AppBar courseCode={currentCourse}/>;
-      }
-      else if (user !== null) {
-        return <AppBar courseCode="LibreQuiz"/>;
-      }
-    })()}
-      
+    return <ThemeProvider theme={theme}>
+      {(() => {
+        console.log("User", user);
+        console.log("Path", router.pathname);
+        if (router.pathname !== "/home" && user !== null) {
+          return <AppBar courseCode={currentCourse} />;
+        }
+        else if (user !== null) {
+          return <AppBar courseCode="LibreQuiz" />;
+        }
+      })()}
+
       <Component {...pageProps} />
-    </>;
+    </ThemeProvider>;
   }
   return <></>;
 }
