@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Button from '@mui/material/Button';
-import starIcon from '../public/img/star.svg';
+import logo from '../public/img/star.svg';
 import mockup from '../public/img/mockup.png';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <header className={styles.header}>
         <div className={styles.logo}>
-          <Image src={starIcon} alt="Star icon" />
+          <Image src={logo} alt="Star icon" />
         </div>
         <div className={styles.buttons}>
           <Button variant="contained" onClick={signIn}>
