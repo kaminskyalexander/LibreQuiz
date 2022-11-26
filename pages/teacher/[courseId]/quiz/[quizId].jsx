@@ -32,7 +32,7 @@ function QuizEditor({ handleStartQuiz }) {
       snapshot.forEach((doc) => {
         questionsTemp.push({ id: doc.id, name: doc.data().question });
       })
-      
+
       setQuestions(questionsTemp);
     });
 
@@ -44,13 +44,13 @@ function QuizEditor({ handleStartQuiz }) {
     return unsubscribe;
   }, []);
 
-  
+
 
   function removeQuestion(id) {
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", id));
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "answers", id));
     deleteDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "submission", id));
-    updateDoc(doc(db, "courses", router.query.courseId), {
+    updateDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId), {
       questionOrder: arrayRemove(id)
     })
   }
@@ -64,7 +64,7 @@ function QuizEditor({ handleStartQuiz }) {
           questionOrder: arrayUnion(questionDoc.id)
         });
       });
-    
+
   }
 
 
@@ -105,7 +105,7 @@ function QuizEditor({ handleStartQuiz }) {
 
 // ########################################################################################################
 
-function Session({firstQuestion}) {
+function Session({ firstQuestion }) {
   const router = useRouter();
   const [quizName, setQuizName] = React.useState();
 
@@ -115,14 +115,14 @@ function Session({firstQuestion}) {
       setQuizName(quizDoc.data().name);
     })();
   }, [])
-  
+
   return (
     <Container maxWidth={"90%"}>
       <Button
         variant="contained"
         startIcon={<ArrowBackIcon />}
-        sx={{margin: 5}}
-        onClick = {() => {
+        sx={{ margin: 5 }}
+        onClick={() => {
           updateDoc((doc(db, "courses", router.query.courseId)), {
             activeQuiz: null,
             activeQuestion: null
@@ -135,12 +135,11 @@ function Session({firstQuestion}) {
         <Typography variant="h1" align="center">
           {quizName}
         </Typography>
-        <Button 
-          variant="contained" 
-          sx={{width: 120}}
+        <Button
+          variant="contained"
+          sx={{ width: 120 }}
           onClick={() => {
-            if(firstQuestion !== null)
-            {
+            if (firstQuestion !== null) {
               updateDoc((doc(db, "courses", router.query.courseId)), {
                 activeQuestion: firstQuestion
               })
@@ -155,17 +154,20 @@ function Session({firstQuestion}) {
 
 // ########################################################################################################
 
-function Question() {
+function Question({ questionOrder }) {
   const theme = useTheme();
   const router = useRouter();
   const [question, setQuestion] = React.useState("");
+  const [questionId, setQuestionId] = React.useState("");
   const [options, setOptions] = React.useState(["", "", "", ""]);
 
   React.useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "courses", router.query.courseId), (snapshot) => {
       (async () => {
-        const questionId = snapshot.data().activeQuestion;
-        const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", questionId));
+        const snapshotQuestionId = snapshot.data().activeQuestion;
+        if (snapshotQuestionId === null) return;
+        const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", router.query.quizId, "questions", snapshotQuestionId));
+        setQuestionId(snapshotQuestionId);
         setQuestion(questionDoc.data().question);
         setOptions(questionDoc.data().options);
       })();
@@ -173,6 +175,26 @@ function Question() {
 
     return unsubscribe;
   }, []);
+
+  function handleSkip() {
+    const i = questionOrder.findIndex((e) => e === questionId) + 1;
+    console.log("Skip", i, questionOrder, questionId)
+    updateDoc(doc(db, "courses", router.query.courseId),
+      (i < questionOrder.length) ? {
+        activeQuestion: questionOrder[i]
+      } : {
+        activeQuestion: null,
+        activeQuiz: null
+      });
+  };
+
+  function handlePrevious() {
+    console.log("Helllo");
+    const i = questionOrder.findIndex((e) =>  e === questionId) - 1;
+    updateDoc(doc(db, "courses", router.query.courseId), {
+      activeQuestion: (i < 0) ? null : questionOrder[i]
+    });
+  };
 
   return (
     <>
@@ -188,7 +210,7 @@ function Question() {
         <Grid
           container
           spacing={"15vh"}
-          style={{ maxWidth: '90%'}}
+          style={{ maxWidth: '90%' }}
         >
           <Grid item xs={6}>
             <Typography
@@ -211,7 +233,7 @@ function Question() {
               C{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-            {options[2]}
+              {options[2]}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -223,7 +245,7 @@ function Question() {
               B{' '}
             </Typography>
             <Typography display="inline" variant="h4">
-            {options[1]}
+              {options[1]}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -245,17 +267,19 @@ function Question() {
         <BottomNavigation
           showLabels
           sx={{ width: '50vw' }}
-          style={{ backgroundColor: theme.palette.primary.main}}
+          style={{ backgroundColor: theme.palette.primary.main }}
         >
           <BottomNavigationAction
             label="Previous"
             style={{ color: 'white' }}
             icon={<ArrowBackIosIcon style={{ color: 'white' }} />}
+            onClick={handlePrevious}
           />
           <BottomNavigationAction
             label="Skip"
             style={{ color: 'white' }}
             icon={<SkipNextIcon style={{ color: 'white' }} />}
+            onClick={handleSkip}
           />
           <BottomNavigationAction
             label="Grade"
@@ -291,9 +315,9 @@ export default function Quiz() {
 
   console.log(questionOrder);
   if (quizActive && currentQuestion !== null) {
-    return <Question/>
-  } else if(quizActive) {
-    return <Session firstQuestion={(questionOrder.length > 0 ? questionOrder[0] : null)}/>
+    return <Question questionOrder={questionOrder} />;
+  } else if (quizActive) {
+    return <Session firstQuestion={(questionOrder.length > 0 ? questionOrder[0] : null)} />
   } else {
     return <QuizEditor handleStartQuiz={() => {
       updateDoc(doc(db, "courses", router.query.courseId), {
