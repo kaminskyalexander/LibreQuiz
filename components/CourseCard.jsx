@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 export default function CourseCard({ name, time, description, thumbnail, href, onRemove }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,9 +23,9 @@ export default function CourseCard({ name, time, description, thumbnail, href, o
     <Card>
       <CardActionArea component="div" onClick={event => { router.push(href) }}>
         <CardMedia
-          component="img"
+          component={Image}
           height="140"
-          alt="Course Thumbnail"
+          alt=" "
           image={thumbnail}
         />
         <CardHeader
