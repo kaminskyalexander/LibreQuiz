@@ -46,7 +46,8 @@ const QuizContent = () => {
       const questionId = snapshot.data().activeQuestion;
       setActiveQuizId(quizId);
       setActiveQuestionId(questionId);
-      if (quizId === null || questionId === null) return;
+      console.log(quizId, questionId)
+      if (!quizId || !questionId) return;
       (async () => {
         const questionDoc = await getDoc(doc(db, "courses", router.query.courseId, "quizzes", quizId, "questions", questionId));
         setActiveQuestion(questionDoc.data().question);
@@ -54,7 +55,7 @@ const QuizContent = () => {
     });
   }, []);
 
-  const quizOngoing = activeQuestionId !== null;
+  const quizOngoing = !!activeQuestionId;
 
   if (quizOngoing) {
     return <>
@@ -101,12 +102,14 @@ const QuizActiveContent = ({ activeQuizId, activeQuestionId, activeQuestion }) =
 
   React.useEffect(() => {
     (async () => {
-      const responseDoc = doc(db, "courses", router.query.courseId, "quizzes", activeQuizId, "submissions", activeQuestionId, "students", user.uid);
-      const responseSnap = await getDoc(responseDoc);
-      if (responseSnap.exists()) {
-        return onSnapshot(responseDoc, (snapshot) => {
-          setCurrentAns(snapshot.data().response);
-        });
+      if (activeQuizId && activeQuestionId) {
+        const responseDoc = doc(db, "courses", router.query.courseId, "quizzes", activeQuizId, "submissions", activeQuestionId, "students", user.uid);
+        const responseSnap = await getDoc(responseDoc);
+        if (responseSnap.exists()) {
+          return onSnapshot(responseDoc, (snapshot) => {
+            setCurrentAns(snapshot.data().response);
+          });
+        }
       }
       setCurrentAns(null);
     })();
